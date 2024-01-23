@@ -1,9 +1,9 @@
-[submodule "trunk/lib/lua"]
-	path = trunk/lib/lua
+[submodule "src/lib/lua"]
+	path = src/lib/lua
 	url = https://gitlab.com/code9354626/library/lua.git
-[submodule "trunk/lib/yaml"]
-	path = trunk/lib/yaml
+[submodule "src/lib/yaml"]
+	path = src/lib/yaml
 	url = https://gitlab.com/code9354626/library/yaml.git
-[submodule "trunk/lib/libnet"]
-	path = trunk/lib/libnet
+[submodule "src/lib/libnet"]
+	path = src/lib/libnet
 	url = https://github.com/kouzhudong/libnet.git
