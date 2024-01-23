@@ -1,0 +1,14 @@
+目录说明：
+1.lua是官方的的仓库。
+2.liblua是一个用户层的dll。
+3.luac是一个程序。
+4.luadrv是一个内核态的lib。
+5.test是测试EXE。
+6.NtLua是别人弄的Windows驱动用的库。
+
+特别说明：
+1.内核态的lib要关闭警告和把警告视为错误。
+2.32位的内核态的lib默认的调用方式非std，而是c.
+3.DLL的工程要定义LUA_BUILD_AS_DLL。
+
+18:32 2021/8/27

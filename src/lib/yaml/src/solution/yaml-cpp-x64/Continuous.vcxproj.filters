@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="D:\git\github\windows\libs\winlibyaml\trunk\solution\yaml-cpp-x64\CMakeFiles\e7752f0e5e49b12310e41e34a92f03c2\Continuous.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="D:\git\github\windows\libs\winlibyaml\trunk\yaml-cpp\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="D:\git\github\windows\libs\winlibyaml\trunk\solution\yaml-cpp-x64\CMakeFiles\Continuous" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{8678FCF2-F6EE-3CD0-89DC-E1B607D809B9}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

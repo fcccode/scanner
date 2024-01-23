@@ -1,0 +1,36 @@
+# CMake generated Testfile for 
+# Source directory: D:/code/git/github/winlibyaml/trunk/libyaml/tests
+# Build directory: D:/code/git/github/winlibyaml/trunk/solution/win32/tests
+# 
+# This file includes the relevant testing commands required for 
+# testing this directory and lists subdirectories to be tested as well.
+if("${CTEST_CONFIGURATION_TYPE}" MATCHES "^([Dd][Ee][Bb][Uu][Gg])$")
+  add_test(version "D:/code/git/github/winlibyaml/trunk/solution/win32/Debug/test-version.exe")
+  set_tests_properties(version PROPERTIES  _BACKTRACE_TRIPLES "D:/code/git/github/winlibyaml/trunk/libyaml/tests/CMakeLists.txt;25;add_test;D:/code/git/github/winlibyaml/trunk/libyaml/tests/CMakeLists.txt;0;")
+elseif("${CTEST_CONFIGURATION_TYPE}" MATCHES "^([Rr][Ee][Ll][Ee][Aa][Ss][Ee])$")
+  add_test(version "D:/code/git/github/winlibyaml/trunk/solution/win32/Release/test-version.exe")
+  set_tests_properties(version PROPERTIES  _BACKTRACE_TRIPLES "D:/code/git/github/winlibyaml/trunk/libyaml/tests/CMakeLists.txt;25;add_test;D:/code/git/github/winlibyaml/trunk/libyaml/tests/CMakeLists.txt;0;")
+elseif("${CTEST_CONFIGURATION_TYPE}" MATCHES "^([Mm][Ii][Nn][Ss][Ii][Zz][Ee][Rr][Ee][Ll])$")
+  add_test(version "D:/code/git/github/winlibyaml/trunk/solution/win32/MinSizeRel/test-version.exe")
+  set_tests_properties(version PROPERTIES  _BACKTRACE_TRIPLES "D:/code/git/github/winlibyaml/trunk/libyaml/tests/CMakeLists.txt;25;add_test;D:/code/git/github/winlibyaml/trunk/libyaml/tests/CMakeLists.txt;0;")
+elseif("${CTEST_CONFIGURATION_TYPE}" MATCHES "^([Rr][Ee][Ll][Ww][Ii][Tt][Hh][Dd][Ee][Bb][Ii][Nn][Ff][Oo])$")
+  add_test(version "D:/code/git/github/winlibyaml/trunk/solution/win32/RelWithDebInfo/test-version.exe")
+  set_tests_properties(version PROPERTIES  _BACKTRACE_TRIPLES "D:/code/git/github/winlibyaml/trunk/libyaml/tests/CMakeLists.txt;25;add_test;D:/code/git/github/winlibyaml/trunk/libyaml/tests/CMakeLists.txt;0;")
+else()
+  add_test(version NOT_AVAILABLE)
+endif()
+if("${CTEST_CONFIGURATION_TYPE}" MATCHES "^([Dd][Ee][Bb][Uu][Gg])$")
+  add_test(reader "D:/code/git/github/winlibyaml/trunk/solution/win32/Debug/test-reader.exe")
+  set_tests_properties(reader PROPERTIES  _BACKTRACE_TRIPLES "D:/code/git/github/winlibyaml/trunk/libyaml/tests/CMakeLists.txt;26;add_test;D:/code/git/github/winlibyaml/trunk/libyaml/tests/CMakeLists.txt;0;")
+elseif("${CTEST_CONFIGURATION_TYPE}" MATCHES "^([Rr][Ee][Ll][Ee][Aa][Ss][Ee])$")
+  add_test(reader "D:/code/git/github/winlibyaml/trunk/solution/win32/Release/test-reader.exe")
+  set_tests_properties(reader PROPERTIES  _BACKTRACE_TRIPLES "D:/code/git/github/winlibyaml/trunk/libyaml/tests/CMakeLists.txt;26;add_test;D:/code/git/github/winlibyaml/trunk/libyaml/tests/CMakeLists.txt;0;")
+elseif("${CTEST_CONFIGURATION_TYPE}" MATCHES "^([Mm][Ii][Nn][Ss][Ii][Zz][Ee][Rr][Ee][Ll])$")
+  add_test(reader "D:/code/git/github/winlibyaml/trunk/solution/win32/MinSizeRel/test-reader.exe")
+  set_tests_properties(reader PROPERTIES  _BACKTRACE_TRIPLES "D:/code/git/github/winlibyaml/trunk/libyaml/tests/CMakeLists.txt;26;add_test;D:/code/git/github/winlibyaml/trunk/libyaml/tests/CMakeLists.txt;0;")
+elseif("${CTEST_CONFIGURATION_TYPE}" MATCHES "^([Rr][Ee][Ll][Ww][Ii][Tt][Hh][Dd][Ee][Bb][Ii][Nn][Ff][Oo])$")
+  add_test(reader "D:/code/git/github/winlibyaml/trunk/solution/win32/RelWithDebInfo/test-reader.exe")
+  set_tests_properties(reader PROPERTIES  _BACKTRACE_TRIPLES "D:/code/git/github/winlibyaml/trunk/libyaml/tests/CMakeLists.txt;26;add_test;D:/code/git/github/winlibyaml/trunk/libyaml/tests/CMakeLists.txt;0;")
+else()
+  add_test(reader NOT_AVAILABLE)
+endif()

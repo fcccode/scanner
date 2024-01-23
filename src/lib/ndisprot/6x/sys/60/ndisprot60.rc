@@ -1,0 +1,40 @@
+/*++
+Copyright (c) Veda.  All rights reserved.
+
+Module Name:
+    ndisprot.rc
+ 
+Abstract:
+    Internal resource file for driver.
+--*/
+
+#include <windows.h>
+#include <ntverp.h>
+#include "..\..\..\inc\ver.h"
+
+#define	VER_FILETYPE	VFT_DRV
+#define	VER_FILESUBTYPE	VFT2_DRV_NETWORK
+
+#define VER_FILEDESCRIPTION_STR     "NDIS User mode I/O Driver"
+#define VER_INTERNALNAME_STR        "NDISPROT60.SYS"
+#define VER_ORIGINALFILENAME_STR    "NDISPROT60.SYS"
+#define VER_LANGNEUTRAL
+
+#define VER_FILEVERSION             g_FILEVERSION
+#define VER_FILEVERSION_STR         g_FileVersion
+
+#undef  VER_PRODUCTVERSION
+#define VER_PRODUCTVERSION          VER_FILEVERSION
+
+#undef  VER_PRODUCTVERSION_STR
+#define VER_PRODUCTVERSION_STR      VER_FILEVERSION_STR
+
+#define VER_LEGALCOPYRIGHT_STR      "Copyright (C) 2020 Veda"
+
+#undef  VER_COMPANYNAME_STR
+#define VER_COMPANYNAME_STR         "北京卫达信息技术有限公司"
+
+#undef  VER_PRODUCTNAME_STR
+#define VER_PRODUCTNAME_STR         "NDIS 6.0 Protocol Driver"
+
+#include "common.ver"

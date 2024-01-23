@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="D:\git\github\windows\libs\winlibyaml\trunk\yaml-cpp\test\binary_test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\git\github\windows\libs\winlibyaml\trunk\yaml-cpp\test\integration\emitter_test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\git\github\windows\libs\winlibyaml\trunk\yaml-cpp\test\integration\encoding_test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\git\github\windows\libs\winlibyaml\trunk\yaml-cpp\test\integration\error_messages_test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\git\github\windows\libs\winlibyaml\trunk\yaml-cpp\test\integration\gen_emitter_test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\git\github\windows\libs\winlibyaml\trunk\yaml-cpp\test\integration\handler_spec_test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\git\github\windows\libs\winlibyaml\trunk\yaml-cpp\test\integration\handler_test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\git\github\windows\libs\winlibyaml\trunk\yaml-cpp\test\integration\load_node_test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\git\github\windows\libs\winlibyaml\trunk\yaml-cpp\test\integration\node_spec_test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\git\github\windows\libs\winlibyaml\trunk\yaml-cpp\test\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\git\github\windows\libs\winlibyaml\trunk\yaml-cpp\test\node\node_test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\git\github\windows\libs\winlibyaml\trunk\yaml-cpp\test\ostream_wrapper_test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\git\github\windows\libs\winlibyaml\trunk\yaml-cpp\test\parser_test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\git\github\windows\libs\winlibyaml\trunk\yaml-cpp\test\regex_test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\git\github\windows\libs\winlibyaml\trunk\yaml-cpp\test\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{1F8B478E-6CDC-3EF9-B2E8-CB30B6521689}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
