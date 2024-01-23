@@ -1,2 +1,0 @@
-# winlibyaml
-libyaml for windows
