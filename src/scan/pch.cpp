@@ -159,9 +159,11 @@ int GetOneAddress(_In_ const char * source,
         return(1);
     }
 
+    int len = lstrlenA("rpcap://");
+
     /* Scan the list printing every entry */
     for (pcap_if_t * d = alldevs; d; d = d->next) {
-        if (_stricmp(d->name, source) == 0) {
+        if (_stricmp(d->name + len, source) == 0) {
             for (pcap_addr_t * a = d->addresses; a; a = a->next) {
                 switch (a->addr->sa_family) {
                 case AF_INET:
