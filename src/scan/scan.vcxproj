@@ -163,6 +163,7 @@
     <ClCompile Include="scan.cpp" />
     <ClCompile Include="smb.cpp" />
     <ClCompile Include="smtp.cpp" />
+    <ClCompile Include="sqlite.cpp" />
     <ClCompile Include="tcp.cpp" />
     <ClCompile Include="threads.cpp" />
     <ClCompile Include="tls.cpp" />
@@ -186,6 +187,7 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="smb.h" />
     <ClInclude Include="smtp.h" />
+    <ClInclude Include="sqlite.h" />
     <ClInclude Include="tcp.h" />
     <ClInclude Include="threads.h" />
     <ClInclude Include="tls.h" />
