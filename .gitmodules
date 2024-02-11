@@ -1,6 +1,3 @@
 [submodule "src/lib/libnet"]
 	path = src/lib/libnet
 	url = https://github.com/kouzhudong/libnet.git
-[submodule "src/wil"]
-	path = src/wil
-	url = https://github.com/microsoft/wil.git
