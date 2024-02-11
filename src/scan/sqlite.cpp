@@ -20,7 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-static int callback(void * NotUsed, int argc, char ** argv, char ** azColName)
+int callback(void * NotUsed, int argc, char ** argv, char ** azColName)
 {
     UNREFERENCED_PARAMETER(NotUsed);
 
@@ -52,7 +52,7 @@ int sqlite(int argc, char ** argv)
         return(1);
     }
 
-    rc = sqlite3_exec(db, argv[2], (int(__cdecl *)(void *, int, char **, char **))callback, 0, &zErrMsg);
+    rc = sqlite3_exec(db, argv[2], callback, 0, &zErrMsg);
     if (rc != SQLITE_OK) {
         fprintf(stderr, "SQL error: %s\n", zErrMsg);
         sqlite3_free(zErrMsg);
