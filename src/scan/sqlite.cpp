@@ -34,31 +34,23 @@ int callback(void * NotUsed, int argc, char ** argv, char ** azColName)
 }
 
 
-int sqlite(int argc, char ** argv)
+int sqlite(const char * Filename, const char * sql)
 {
-    sqlite3 * db;
-    char * zErrMsg = 0;
-    int rc;
-
-    if (argc != 3) {
-        fprintf(stderr, "Usage: %s DATABASE SQL-STATEMENT\n", argv[0]);
-        return(1);
-    }
-
-    rc = sqlite3_open(argv[1], &db);
+    sqlite3 * db;    
+    int rc = sqlite3_open(Filename, &db);
     if (rc) {
         fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
         sqlite3_close(db);
         return(1);
     }
 
-    rc = sqlite3_exec(db, argv[2], callback, 0, &zErrMsg);
+    char * zErrMsg = 0;
+    rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);
     if (rc != SQLITE_OK) {
         fprintf(stderr, "SQL error: %s\n", zErrMsg);
         sqlite3_free(zErrMsg);
     }
 
     sqlite3_close(db);
-
     return 0;
 }
