@@ -1,5 +1,6 @@
 #include "threads.h"
 #include "tcp.h"
+#include "sqlite.h"
 
 
 LONG volatile g_stop_scan;
@@ -213,15 +214,20 @@ void ReplyAck(struct pcap_pkthdr * header, const BYTE * pkt_data, PSCAN_CONTEXT 
         switch (tcp4->ip_hdr.Protocol) {
         case IPPROTO_TCP:
         {
-            wchar_t SrcIp[46] = {0};
+            char SrcIp[46] = {0};
             //wchar_t DesIp[46] = {0};
 
-            InetNtop(AF_INET, &tcp4->ip_hdr.SourceAddress, SrcIp, _ARRAYSIZE(SrcIp));
+            InetNtopA(AF_INET, &tcp4->ip_hdr.SourceAddress, SrcIp, _ARRAYSIZE(SrcIp));
             //InetNtop(AF_INET, &tcp4->ip_hdr.DestinationAddress, DesIp, _ARRAYSIZE(DesIp));
 
             if ((tcp4->tcp_hdr.th_flags & TH_ACK) && (tcp4->tcp_hdr.th_flags & TH_SYN)) {
                 if (RemotePort == ntohs(tcp4->tcp_hdr.th_sport)) {
-                    printf("%ls:%d open.\n", SrcIp, ntohs(tcp4->tcp_hdr.th_sport));
+                    printf("%s:%d open.\n", SrcIp, ntohs(tcp4->tcp_hdr.th_sport));
+
+                    char Tmp[MAX_PATH]{};
+                    const char * sql = "INSERT INTO v4_443 (IPv4) VALUES ('%s');";
+                    sprintf_s(Tmp, sql, SrcIp);
+                    sqlite("scan.db", Tmp);
 
                     EnterCriticalSection(&g_IPv4Lock);
                     g_IPv4.insert(tcp4->ip_hdr.SourceAddress.S_un.S_addr);
@@ -617,6 +623,9 @@ DWORD WINAPI IPv4SubnetScanThread(_In_ LPVOID lpParameter)
         return ERROR_INVALID_HANDLE;
     }
 
+    const char * sql = "CREATE TABLE v4_443(IPv4 TEXT PRIMARY KEY NOT NULL,Date TEXT,Os TEXT, IsHttp TEXT);";
+    sqlite("scan.db", sql);
+
     //////////////////////////////////////////////////////////////////////////////////////////////
 
     PSCAN_CONTEXT SendDataArray[MAXIMUM_WAIT_OBJECTS] = {};
@@ -752,15 +761,15 @@ void IPv4PortReplyAck(struct pcap_pkthdr * header, const BYTE * pkt_data, _ScanC
         switch (tcp4->ip_hdr.Protocol) {
         case IPPROTO_TCP:
         {
-            wchar_t SrcIp[46] = {0};
+            char SrcIp[46] = {0};
             //wchar_t DesIp[46] = {0};
 
-            InetNtop(AF_INET, &tcp4->ip_hdr.SourceAddress, SrcIp, _ARRAYSIZE(SrcIp));
+            InetNtopA(AF_INET, &tcp4->ip_hdr.SourceAddress, SrcIp, _ARRAYSIZE(SrcIp));
             //InetNtop(AF_INET, &tcp4->ip_hdr.DestinationAddress, DesIp, _ARRAYSIZE(DesIp));
 
             if ((tcp4->tcp_hdr.th_flags & TH_ACK) && (tcp4->tcp_hdr.th_flags & TH_SYN)) {
                 if (S_addr == tcp4->ip_hdr.SourceAddress.S_un.S_addr) {
-                    printf("%ls:%d open.\n", SrcIp, ntohs(tcp4->tcp_hdr.th_sport));
+                    printf("%s:%d open.\n", SrcIp, ntohs(tcp4->tcp_hdr.th_sport));
 
                     EnterCriticalSection(&g_IPv4Lock);
                     g_IPv4.insert(ntohs(tcp4->tcp_hdr.th_sport));
