@@ -6,7 +6,7 @@
 #ifdef _DEBUG
 #pragma comment(lib, "..\\x64\\Debug\\sqlite3.lib")
 #else
-#pragma comment(lib, "..\\..\\sqlite\\x64\\Debug\\sqlite3.lib")
+#pragma comment(lib, "..\\x64\\release\\sqlite3.lib")
 #endif
 #else 
 #ifdef _DEBUG
