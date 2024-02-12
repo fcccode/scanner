@@ -8,6 +8,7 @@
 
 
 CHAR g_ExePath[MAX_PATH]{};
+CHAR g_Date[MAX_PATH];
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -55,6 +56,11 @@ void init()
 {
     GetExePath(g_ExePath, _ARRAYSIZE(g_ExePath) - 1);
 
+    SYSTEMTIME st;
+    GetLocalTime(&st);
+
+    //格式：2016-07-11
+    sprintf_s(g_Date, "%04d-%02d-%02d", st.wYear, st.wMonth, st.wDay);
 }
 
 

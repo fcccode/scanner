@@ -228,8 +228,8 @@ void ReplyAck(struct pcap_pkthdr * header, const BYTE * pkt_data, PSCAN_CONTEXT 
 
                     if (ret.second) {
                         char Tmp[MAX_PATH]{};
-                        const char * sql = "INSERT INTO v4_443 (IPv4) VALUES ('%s');";
-                        sprintf_s(Tmp, sql, SrcIp);
+                        const char * sql = "INSERT INTO v4_443 (IPv4, Date) VALUES ('%s', '%s');";
+                        sprintf_s(Tmp, sql, SrcIp, g_Date);
                         sqlite(ScanContext->FileName->c_str(), Tmp);
 
                         printf("%-16s:%d open, 已经处理%I64d，完成比%f%%, 获取到%zd.\n",
@@ -391,6 +391,9 @@ DWORD WINAPI ScanAllIPv4Thread(_In_ LPVOID lpParameter)
         fprintf(stderr, "没有获取到%s的网关的物理地址，扫描退出\n", source.c_str());
         return ERROR_INVALID_HANDLE;
     }
+
+    const char * sql = "CREATE TABLE v4_443(IPv4 TEXT PRIMARY KEY NOT NULL,Date TEXT,Os TEXT,OsVer TEXT, IsHttp TEXT, AppName TEXT, AppVer TEXT, Certificate TEXT);";
+    sqlite(ScanContext->FileName->c_str(), sql);
 
     //////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -627,7 +630,7 @@ DWORD WINAPI IPv4SubnetScanThread(_In_ LPVOID lpParameter)
         return ERROR_INVALID_HANDLE;
     }
 
-    const char * sql = "CREATE TABLE v4_443(IPv4 TEXT PRIMARY KEY NOT NULL,Date TEXT,Os TEXT, IsHttp TEXT);";
+    const char * sql = "CREATE TABLE v4_443(IPv4 TEXT PRIMARY KEY NOT NULL,Date TEXT,Os TEXT,OsVer TEXT, IsHttp TEXT, AppName TEXT, AppVer TEXT, Certificate TEXT);";
     sqlite(ScanContext->FileName->c_str(), sql);
 
     //////////////////////////////////////////////////////////////////////////////////////////////

@@ -207,6 +207,7 @@ using namespace std;
 
 
 extern CHAR g_ExePath[MAX_PATH];
+extern CHAR g_Date[MAX_PATH];
 
 BOOL LoadNpcapDlls();
 int RangedRand(int range_min, int range_max);
