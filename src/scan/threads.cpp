@@ -232,12 +232,14 @@ void ReplyAck(struct pcap_pkthdr * header, const BYTE * pkt_data, PSCAN_CONTEXT 
                         sprintf_s(Tmp, sql, SrcIp, g_Date);
                         sqlite(ScanContext->FileName->c_str(), Tmp);
 
-                        printf("%-16s:%d open, 已经处理%I64d，完成比%f%%, 获取到%zd.\n",
-                               SrcIp,
-                               ntohs(tcp4->tcp_hdr.th_sport),
-                               g_Send_IP,
-                               (double)((double)(g_Send_IP * 100) / (double)g_TotalNumbers),
-                               g_IPv4.size());
+                        if (0 == g_IPv4.size() % 10) {
+                            printf("%-16s:%d open, 已经处理%I64d，完成比%f%%, 获取到%zd.\n",
+                                   SrcIp,
+                                   ntohs(tcp4->tcp_hdr.th_sport),
+                                   g_Send_IP,
+                                   (double)((double)(g_Send_IP * 100) / (double)g_TotalNumbers),
+                                   g_IPv4.size());
+                        }
                     }
                 }
             } else if (tcp4->tcp_hdr.th_flags & TH_RST) {
@@ -652,7 +654,7 @@ DWORD WINAPI IPv4SubnetScanThread(_In_ LPVOID lpParameter)
         SendDataArray[i]->mask = ScanContext->mask;
         SendDataArray[i]->fp = fp;
         SendDataArray[i]->SourceAddress.IPv4.S_un.S_addr = SourceAddress.S_un.S_addr;
-        SendDataArray[i]->RemotePort = ScanContext->RemotePort;        
+        SendDataArray[i]->RemotePort = ScanContext->RemotePort;
         CopyMemory(SendDataArray[i]->SrcMac, SrcMac, sizeof(SrcMac));
         CopyMemory(SendDataArray[i]->DesMac, DesMac, sizeof(DesMac));
 
