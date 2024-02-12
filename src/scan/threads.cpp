@@ -22,6 +22,23 @@ LONG64 volatile g_Send_IP;
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+void WriteIPv4(const char * Filename)
+{
+    EnterCriticalSection(&g_IPv4Lock);
+    for (auto & iter : g_IPv4) {
+        char Tmp[MAX_PATH]{};
+        const char * sql = "INSERT INTO v4_443 (IPv4, Date) VALUES ('%s', '%s');";
+
+        char SrcIp[46] = {0};
+        InetNtopA(AF_INET, &iter, SrcIp, _ARRAYSIZE(SrcIp));
+
+        sprintf_s(Tmp, sql, SrcIp, g_Date);
+        sqlite(Filename, Tmp);
+    }
+    LeaveCriticalSection(&g_IPv4Lock);
+}
+
+
 template <class T>
 DWORD WINAPI SendThread(_In_ T * lpParameter)
 //DWORD WINAPI SendThread(_In_ LPVOID lpParameter)
@@ -227,12 +244,7 @@ void ReplyAck(struct pcap_pkthdr * header, const BYTE * pkt_data, PSCAN_CONTEXT 
                     LeaveCriticalSection(&g_IPv4Lock);
 
                     if (ret.second) {
-                        char Tmp[MAX_PATH]{};
-                        const char * sql = "INSERT INTO v4_443 (IPv4, Date) VALUES ('%s', '%s');";
-                        sprintf_s(Tmp, sql, SrcIp, g_Date);
-                        sqlite(ScanContext->FileName->c_str(), Tmp);
-
-                        if (0 == g_IPv4.size() % 10) {
+                        if (0 == g_IPv4.size() % 100) {
                             printf("%-16s:%d open, 已经处理%I64d，完成比%f%%, 获取到%zd.\n",
                                    SrcIp,
                                    ntohs(tcp4->tcp_hdr.th_sport),
@@ -469,6 +481,8 @@ DWORD WINAPI ScanAllIPv4Thread(_In_ LPVOID lpParameter)
     //////////////////////////////////////////////////////////////////////////////////////////////
 
     WaitForMultipleObjects(MAXIMUM_WAIT_OBJECTS, SendThreadArray, TRUE, INFINITE);
+
+    WriteIPv4(ScanContext->FileName->c_str());
 
     for (int i = 0; i < MAXIMUM_WAIT_OBJECTS; i++) {
         CloseHandle(SendThreadArray[i]);

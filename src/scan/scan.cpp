@@ -28,6 +28,11 @@ BOOL WINAPI CtrlHandler(DWORD fdwCtrlType)
 https://docs.microsoft.com/en-us/windows/console/registering-a-control-handler-function
 */
 {
+    string FileName;
+    FileName = g_ExePath;
+    FileName += "scan.db";
+    WriteIPv4(FileName.c_str());
+
     switch (fdwCtrlType) {        
     case CTRL_C_EVENT:// Handle the CTRL-C signal.
         printf("Ctrl-C event\n\n");

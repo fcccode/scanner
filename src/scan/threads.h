@@ -72,3 +72,4 @@ DWORD WINAPI ScanAllIPv4Thread(_In_ LPVOID lpParameter);
 DWORD WINAPI IPv4SubnetScanThread(_In_ LPVOID lpParameter);
 DWORD WINAPI IPv4PortScanThread(_In_ LPVOID lpParameter);
 DWORD WINAPI IPv6PortScanThread(_In_ LPVOID lpParameter);
+void WriteIPv4(const char * Filename);
