@@ -41,6 +41,7 @@ typedef struct _IP_ADDRESS {
 */
 typedef struct _ScanContext {
     pcap_t * fp;
+    string * FileName;
 
     UINT8 SrcMac[6];
     UINT8 DesMac[6];

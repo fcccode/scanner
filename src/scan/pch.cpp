@@ -561,3 +561,19 @@ int GetActivityAdapter(string & ActivityAdapter)
 
     return 0;
 }
+
+
+void GetExePath(_Out_writes_(cchDest) STRSAFE_LPSTR pszDest, _In_ size_t cchDest)
+/*
+
+*/
+{
+    CHAR szPath[MAX_PATH] = {0};
+    GetModuleFileNameA(NULL, szPath, MAX_PATH);
+
+    CHAR * module = PathFindFileNameA(szPath);
+    int n = lstrlenA(szPath) - lstrlenA(module);
+    szPath[n] = 0;
+
+    StringCchCopyA(pszDest, cchDest, szPath);
+}

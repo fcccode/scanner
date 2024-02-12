@@ -230,7 +230,7 @@ void ReplyAck(struct pcap_pkthdr * header, const BYTE * pkt_data, PSCAN_CONTEXT 
                         char Tmp[MAX_PATH]{};
                         const char * sql = "INSERT INTO v4_443 (IPv4) VALUES ('%s');";
                         sprintf_s(Tmp, sql, SrcIp);
-                        sqlite("scan.db", Tmp);
+                        sqlite(ScanContext->FileName->c_str(), Tmp);
 
                         printf("%-16s:%d open, 已经处理%I64d，完成比%f%%, 获取到%zd.\n",
                                SrcIp,
@@ -415,6 +415,7 @@ DWORD WINAPI ScanAllIPv4Thread(_In_ LPVOID lpParameter)
         SendDataArray[i]->fp = fp;
         SendDataArray[i]->SourceAddress.IPv4.S_un.S_addr = SourceAddress.S_un.S_addr;
         SendDataArray[i]->RemotePort = ScanContext->RemotePort;
+        SendDataArray[i]->FileName = ScanContext->FileName;
         CopyMemory(SendDataArray[i]->SrcMac, SrcMac, sizeof(SrcMac));
         CopyMemory(SendDataArray[i]->DesMac, DesMac, sizeof(DesMac));
 
@@ -446,6 +447,7 @@ DWORD WINAPI ScanAllIPv4Thread(_In_ LPVOID lpParameter)
         ReceiveDataArray[i]->fp = fp;
         ReceiveDataArray[i]->RemotePort = ScanContext->RemotePort;
         ReceiveDataArray[i]->CallBack = ReplyAck;
+        ReceiveDataArray[i]->FileName = ScanContext->FileName;
 
         ReceiveThreadArray[i] = CreateThread(NULL,
                                              0,
@@ -626,7 +628,7 @@ DWORD WINAPI IPv4SubnetScanThread(_In_ LPVOID lpParameter)
     }
 
     const char * sql = "CREATE TABLE v4_443(IPv4 TEXT PRIMARY KEY NOT NULL,Date TEXT,Os TEXT, IsHttp TEXT);";
-    sqlite("scan.db", sql);
+    sqlite(ScanContext->FileName->c_str(), sql);
 
     //////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -647,7 +649,7 @@ DWORD WINAPI IPv4SubnetScanThread(_In_ LPVOID lpParameter)
         SendDataArray[i]->mask = ScanContext->mask;
         SendDataArray[i]->fp = fp;
         SendDataArray[i]->SourceAddress.IPv4.S_un.S_addr = SourceAddress.S_un.S_addr;
-        SendDataArray[i]->RemotePort = ScanContext->RemotePort;
+        SendDataArray[i]->RemotePort = ScanContext->RemotePort;        
         CopyMemory(SendDataArray[i]->SrcMac, SrcMac, sizeof(SrcMac));
         CopyMemory(SendDataArray[i]->DesMac, DesMac, sizeof(DesMac));
 
@@ -679,7 +681,7 @@ DWORD WINAPI IPv4SubnetScanThread(_In_ LPVOID lpParameter)
         ReceiveDataArray[i]->fp = fp;
         ReceiveDataArray[i]->RemotePort = ScanContext->RemotePort;
         ReceiveDataArray[i]->CallBack = ReplyAck;
-
+        ReceiveDataArray[i]->FileName = ScanContext->FileName;
         ReceiveThreadArray[i] = CreateThread(NULL,
                                              0,
                                              ReceiveThread,

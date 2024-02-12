@@ -46,6 +46,11 @@ DWORD WINAPI ScanAllIPv4(_In_ PCWSTR RemotePort)
         return ERROR_INVALID_PARAMETER;
     }
 
+    string FileName;
+    FileName = g_ExePath;
+    FileName += "scan.db";
+    ScanContext.FileName = &FileName;
+
     ScanContext.RemotePort = (WORD)port;
     ret = ScanAllIPv4Thread((LPVOID)&ScanContext);
 
@@ -103,6 +108,11 @@ DWORD WINAPI IPv4SubnetScan(_In_ PCWSTR IPv4Subnet, _In_ PCWSTR RemotePort)
     if (port > MAXWORD) {
         return ERROR_INVALID_PARAMETER;
     }
+
+    string FileName;
+    FileName = g_ExePath;
+    FileName += "scan.db";
+    ScanContext.FileName = &FileName;
 
     ScanContext.RemotePort = (WORD)port;
     ScanContext.mask = mask;

@@ -7,14 +7,16 @@
 #include "threads.h"
 
 
+CHAR g_ExePath[MAX_PATH]{};
+
+
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 void banner()
 {
     printf("Made by correy\r\n");
-    printf("112426112@qq.com\r\n");
-    printf("https://correy.webs.com\r\n");
+    printf("https://github.com/kouzhudong\r\n");
     printf("\r\n");
 }
 
@@ -49,6 +51,13 @@ https://docs.microsoft.com/en-us/windows/console/registering-a-control-handler-f
 }
 
 
+void init()
+{
+    GetExePath(g_ExePath, _ARRAYSIZE(g_ExePath) - 1);
+
+}
+
+
 int _cdecl wmain(_In_ int argc, _In_reads_(argc) WCHAR * argv[])
 {
     int ret = ERROR_SUCCESS;
@@ -56,6 +65,8 @@ int _cdecl wmain(_In_ int argc, _In_reads_(argc) WCHAR * argv[])
     setlocale(LC_CTYPE, ".936");
 
     banner();
+
+    init();
 
     if (!SetConsoleCtrlHandler(CtrlHandler, TRUE)) {
         printf("\nERROR: Could not set control handler(LastError:%d)", GetLastError());

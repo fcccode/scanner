@@ -206,6 +206,8 @@ using namespace std;
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+extern CHAR g_ExePath[MAX_PATH];
+
 BOOL LoadNpcapDlls();
 int RangedRand(int range_min, int range_max);
 void ErrorHandler(LPTSTR lpszFunction);
@@ -219,3 +221,4 @@ int EnumAvailableInterface();
 void GetAdapterNames();
 bool GetFirstAvailableInterface(string & name);
 int GetActivityAdapter(string & ActivityAdapter);
+void GetExePath(_Out_writes_(cchDest) STRSAFE_LPSTR pszDest, _In_ size_t cchDest);
