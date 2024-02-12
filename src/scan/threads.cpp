@@ -222,21 +222,23 @@ void ReplyAck(struct pcap_pkthdr * header, const BYTE * pkt_data, PSCAN_CONTEXT 
 
             if ((tcp4->tcp_hdr.th_flags & TH_ACK) && (tcp4->tcp_hdr.th_flags & TH_SYN)) {
                 if (RemotePort == ntohs(tcp4->tcp_hdr.th_sport)) {
-                    printf("%s:%d open.\n", SrcIp, ntohs(tcp4->tcp_hdr.th_sport));
-
-                    char Tmp[MAX_PATH]{};
-                    const char * sql = "INSERT INTO v4_443 (IPv4) VALUES ('%s');";
-                    sprintf_s(Tmp, sql, SrcIp);
-                    sqlite("scan.db", Tmp);
-
                     EnterCriticalSection(&g_IPv4Lock);
-                    g_IPv4.insert(tcp4->ip_hdr.SourceAddress.S_un.S_addr);
+                    auto ret = g_IPv4.insert(tcp4->ip_hdr.SourceAddress.S_un.S_addr);
                     LeaveCriticalSection(&g_IPv4Lock);
 
-                    printf("已经处理%I64d，完成比%f, 获取到%zd.\n",
-                           g_Send_IP,
-                           (double)g_Send_IP / g_TotalNumbers,
-                           g_IPv4.size());
+                    if (ret.second) {
+                        char Tmp[MAX_PATH]{};
+                        const char * sql = "INSERT INTO v4_443 (IPv4) VALUES ('%s');";
+                        sprintf_s(Tmp, sql, SrcIp);
+                        sqlite("scan.db", Tmp);
+
+                        printf("%-16s:%d open, 已经处理%I64d，完成比%f%%, 获取到%zd.\n",
+                               SrcIp,
+                               ntohs(tcp4->tcp_hdr.th_sport),
+                               g_Send_IP,
+                               (double)((double)(g_Send_IP * 100) / (double)g_TotalNumbers),
+                               g_IPv4.size());
+                    }
                 }
             } else if (tcp4->tcp_hdr.th_flags & TH_RST) {
                 //printf("%ls:%d close.\n", SrcIp, ntohs(tcp4->tcp_hdr.th_sport));//发送关闭操作，也可能是开的。
