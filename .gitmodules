@@ -1,3 +1,6 @@
 [submodule "src/lib/libssh2"]
 	path = src/lib/libssh2
 	url = https://github.com/libssh2/libssh2.git
+[submodule "src/lib/libnet"]
+	path = src/lib/libnet
+	url = https://github.com/kouzhudong/libnet.git
