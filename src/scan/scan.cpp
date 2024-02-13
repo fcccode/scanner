@@ -5,6 +5,7 @@
 #include "pch.h"
 #include "options.h"
 #include "threads.h"
+#include "http.h"
 
 
 CHAR g_ExePath[MAX_PATH]{};

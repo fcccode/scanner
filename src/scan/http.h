@@ -1,5 +1,5 @@
 #pragma once
-class http
-{
-};
 
+#include "pch.h"
+
+int IsHttp(const char * ip, const char * port);
