@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="D:\git\github\windows\tools\scanner\src\lib\libssh2\tests\runner.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\git\github\windows\tools\scanner\src\lib\libssh2\tests\session_fixture.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\git\github\windows\tools\scanner\src\lib\libssh2\tests\openssh_fixture.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="D:\git\github\windows\tools\scanner\src\lib\libssh2\tests\runner.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\git\github\windows\tools\scanner\src\lib\libssh2\tests\session_fixture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\git\github\windows\tools\scanner\src\lib\libssh2\tests\openssh_fixture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\git\github\windows\tools\scanner\src\lib\libssh2\tests\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{50130FEC-B242-36C3-A19B-529A7C425860}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{DF9605FD-4F8D-3133-A645-F0C69B6CF181}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

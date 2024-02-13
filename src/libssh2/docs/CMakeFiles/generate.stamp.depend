@@ -1,0 +1,5 @@
+# CMake generation dependency list for this directory.
+C:/Program Files/CMake/share/cmake-3.27/Modules/GNUInstallDirs.cmake
+D:/git/github/windows/tools/scanner/src/lib/libssh2/docs/CMakeLists.txt
+D:/git/github/windows/tools/scanner/src/lib/libssh2/docs/Makefile.am
+D:/git/github/windows/tools/scanner/src/libssh2/docs/Makefile.am.cmake

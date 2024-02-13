@@ -1,0 +1,6 @@
+# CMake generation dependency list for this directory.
+C:/Program Files/CMake/share/cmake-3.27/Modules/CMakeParseArguments.cmake
+D:/git/github/windows/tools/scanner/src/lib/libssh2/cmake/CopyRuntimeDependencies.cmake
+D:/git/github/windows/tools/scanner/src/lib/libssh2/example/CMakeLists.txt
+D:/git/github/windows/tools/scanner/src/lib/libssh2/example/Makefile.inc
+D:/git/github/windows/tools/scanner/src/libssh2/example/Makefile.inc.cmake

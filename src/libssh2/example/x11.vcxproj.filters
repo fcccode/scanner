@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="D:\git\github\windows\tools\scanner\src\lib\libssh2\example\x11.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\git\github\windows\tools\scanner\src\lib\libssh2\example\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{DF9605FD-4F8D-3133-A645-F0C69B6CF181}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
