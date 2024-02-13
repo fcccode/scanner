@@ -80,15 +80,15 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);..\lib\npcap-sdk\npcap-sdk-1.13\Include;..\lib\openssl\VCWIN64AD\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);..\lib\npcap-sdk\npcap-sdk-1.13\Lib\x64;..\x64\Debug;..\lib\openssl\VCWIN64AD\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);..\lib\npcap-sdk\npcap-sdk-1.13\Include;..\lib\openssl\VCWIN64AD\include;..\lib\libssh2\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);..\lib\npcap-sdk\npcap-sdk-1.13\Lib\x64;..\x64\Debug;..\lib\openssl\VCWIN64AD\lib;..\libssh2\src\Debug;$(LibraryPath)</LibraryPath>
     <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <RunCodeAnalysis>true</RunCodeAnalysis>
-    <IncludePath>..\lib\npcap-sdk\npcap-sdk-1.13\Include;$(solutionDir)lib\openssl\VCWIN64AD\include;$(IncludePath)</IncludePath>
-    <LibraryPath>..\lib\npcap-sdk\npcap-sdk-1.13\Lib\x64;..\x64\Release;..\lib\openssl\VCWIN64AD\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>..\lib\npcap-sdk\npcap-sdk-1.13\Include;$(solutionDir)lib\openssl\VCWIN64AD\include;..\lib\libssh2\include;$(IncludePath)</IncludePath>
+    <LibraryPath>..\lib\npcap-sdk\npcap-sdk-1.13\Lib\x64;..\x64\Release;..\lib\openssl\VCWIN64AD\lib;..\libssh2\src\Release;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
