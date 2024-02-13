@@ -78,6 +78,9 @@
     <ClCompile Include="sqlite.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="ssh.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -146,10 +149,12 @@
     <ClInclude Include="sqlite.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="ssh.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\readme.txt" />
-    <Text Include="..\doc\使用说明.txt" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="scan.rc">

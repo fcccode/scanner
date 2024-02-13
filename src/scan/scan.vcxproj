@@ -48,7 +48,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -164,6 +164,7 @@
     <ClCompile Include="smb.cpp" />
     <ClCompile Include="smtp.cpp" />
     <ClCompile Include="sqlite.cpp" />
+    <ClCompile Include="ssh.cpp" />
     <ClCompile Include="tcp.cpp" />
     <ClCompile Include="threads.cpp" />
     <ClCompile Include="tls.cpp" />
@@ -188,6 +189,7 @@
     <ClInclude Include="smb.h" />
     <ClInclude Include="smtp.h" />
     <ClInclude Include="sqlite.h" />
+    <ClInclude Include="ssh.h" />
     <ClInclude Include="tcp.h" />
     <ClInclude Include="threads.h" />
     <ClInclude Include="tls.h" />
@@ -196,7 +198,6 @@
     <ClInclude Include="vulnerability.h" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="..\doc\使用说明.txt" />
     <Text Include="..\readme.txt" />
   </ItemGroup>
   <ItemGroup>
