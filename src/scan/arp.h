@@ -1,5 +1,5 @@
 #pragma once
-class arp
-{
-};
 
+#include "pch.h"
+
+void ArpScan(DWORD start, BYTE mask);

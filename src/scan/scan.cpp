@@ -6,6 +6,7 @@
 #include "options.h"
 #include "threads.h"
 #include "http.h"
+#include "arp.h"
 
 
 CHAR g_ExePath[MAX_PATH]{};
@@ -79,6 +80,8 @@ int _cdecl wmain(_In_ int argc, _In_reads_(argc) WCHAR * argv[])
     banner();
 
     init();
+
+    ArpScan(inet_addr("192.168.0.0"), 16);
 
     if (!SetConsoleCtrlHandler(CtrlHandler, TRUE)) {
         printf("\nERROR: Could not set control handler(LastError:%d)", GetLastError());
