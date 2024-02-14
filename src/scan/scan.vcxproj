@@ -157,10 +157,12 @@
     <ClCompile Include="http.cpp" />
     <ClCompile Include="icmp.cpp" />
     <ClCompile Include="igmp.cpp" />
+    <ClCompile Include="ip.cpp" />
     <ClCompile Include="log.cpp" />
     <ClCompile Include="options.cpp" />
     <ClCompile Include="os.cpp" />
     <ClCompile Include="pch.cpp" />
+    <ClCompile Include="port.cpp" />
     <ClCompile Include="rdp.cpp" />
     <ClCompile Include="scan.cpp" />
     <ClCompile Include="smb.cpp" />
@@ -168,6 +170,7 @@
     <ClCompile Include="sqlite.cpp" />
     <ClCompile Include="ssh.cpp" />
     <ClCompile Include="tcp.cpp" />
+    <ClCompile Include="test.cpp" />
     <ClCompile Include="threads.cpp" />
     <ClCompile Include="tls.cpp" />
     <ClCompile Include="udp.cpp" />
@@ -182,10 +185,12 @@
     <ClInclude Include="http.h" />
     <ClInclude Include="icmp.h" />
     <ClInclude Include="igmp.h" />
+    <ClInclude Include="ip.h" />
     <ClInclude Include="log.h" />
     <ClInclude Include="options.h" />
     <ClInclude Include="os.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="port.h" />
     <ClInclude Include="rdp.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="smb.h" />
@@ -193,6 +198,7 @@
     <ClInclude Include="sqlite.h" />
     <ClInclude Include="ssh.h" />
     <ClInclude Include="tcp.h" />
+    <ClInclude Include="test.h" />
     <ClInclude Include="threads.h" />
     <ClInclude Include="tls.h" />
     <ClInclude Include="udp.h" />

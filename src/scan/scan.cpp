@@ -7,6 +7,8 @@
 #include "threads.h"
 #include "http.h"
 #include "arp.h"
+#include "ip.h"
+#include "port.h"
 
 
 CHAR g_ExePath[MAX_PATH]{};
@@ -131,9 +133,9 @@ int _cdecl wmain(_In_ int argc, _In_reads_(argc) WCHAR * argv[])
 
     //主机/端口发现扫描
     if (_wcsicmp(argv[1], L"ip") == 0) {
-        //ip(--argc, ++argv);
+        ip(--argc, ++argv);
     } else if (_wcsicmp(argv[1], L"port") == 0) {
-        //port(--argc, ++argv);
+        port(--argc, ++argv);
     }
 
     //具体的协议扫描

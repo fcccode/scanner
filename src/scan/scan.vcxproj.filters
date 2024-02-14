@@ -81,6 +81,15 @@
     <ClCompile Include="ssh.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="ip.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="port.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="test.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -150,6 +159,15 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="ssh.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ip.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="port.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="test.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
