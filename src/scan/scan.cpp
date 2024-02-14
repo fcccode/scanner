@@ -81,8 +81,6 @@ int _cdecl wmain(_In_ int argc, _In_reads_(argc) WCHAR * argv[])
 
     init();
 
-    ArpScan(inet_addr("192.168.0.0"), 16);
-
     if (!SetConsoleCtrlHandler(CtrlHandler, TRUE)) {
         printf("\nERROR: Could not set control handler(LastError:%d)", GetLastError());
         return GetLastError();
