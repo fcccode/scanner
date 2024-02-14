@@ -8,6 +8,7 @@
 #include "arp.h"
 #include "ip.h"
 #include "port.h"
+#include "test.h"
 
 
 CHAR g_ExePath[MAX_PATH]{};
@@ -31,6 +32,8 @@ Routine Description
     Prints usage
 --*/
 {
+    banner();
+
     printf("本程序的用法如下：\r\n");
     printf("用法概要：\"%ls\" 命令 地址 端口 选项 ...\r\n", exe);
 
@@ -83,8 +86,12 @@ https://docs.microsoft.com/en-us/windows/console/registering-a-control-handler-f
 }
 
 
-void init()
+DWORD init()
 {
+    int ret = ERROR_SUCCESS;
+
+    setlocale(LC_CTYPE, ".936");
+
     GetExePath(g_ExePath, _ARRAYSIZE(g_ExePath) - 1);
 
     SYSTEMTIME st;
@@ -92,22 +99,11 @@ void init()
 
     //格式：2016-07-11
     sprintf_s(g_Date, "%04d-%02d-%02d", st.wYear, st.wMonth, st.wDay);
-}
-
-
-int _cdecl wmain(_In_ int argc, _In_reads_(argc) WCHAR * argv[])
-{
-    int ret = ERROR_SUCCESS;
-
-    setlocale(LC_CTYPE, ".936");
-
-    banner();
-
-    init();
 
     if (!SetConsoleCtrlHandler(CtrlHandler, TRUE)) {
-        printf("\nERROR: Could not set control handler(LastError:%d)", GetLastError());
-        return GetLastError();
+        DWORD LastError = GetLastError();
+        printf("\nERROR: Could not set control handler(LastError:%d)", LastError);
+        return LastError;
     }
 
     if (!LoadNpcapDlls()) {
@@ -115,7 +111,16 @@ int _cdecl wmain(_In_ int argc, _In_reads_(argc) WCHAR * argv[])
         return ERROR_DLL_INIT_FAILED;
     }
 
-    //ret = ParseCommandLine(argc, argv);    
+    return ret;
+}
+
+
+int _cdecl wmain(_In_ int argc, _In_reads_(argc) WCHAR * argv[])
+{
+    int ret = init();
+    if (ERROR_SUCCESS != ret) {
+        return ret;
+    }
 
     if (1 == argc) {
         return Usage(argv[0]);
@@ -127,14 +132,14 @@ int _cdecl wmain(_In_ int argc, _In_reads_(argc) WCHAR * argv[])
     }
 
     else if (lstrcmpi(argv[1], L"test") == 0) {
-        //test();
+        ret = test();
     }
 
     //主机/端口发现扫描
     if (_wcsicmp(argv[1], L"ip") == 0) {
-        ip(--argc, ++argv);
+        ret = ip(--argc, ++argv);
     } else if (_wcsicmp(argv[1], L"port") == 0) {
-        port(--argc, ++argv);
+        ret = port(--argc, ++argv);
     }
 
     //具体的协议扫描

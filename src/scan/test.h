@@ -2,4 +2,4 @@
 
 #include "pch.h"
 
-void test();
+int test();
