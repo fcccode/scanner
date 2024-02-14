@@ -6,6 +6,9 @@
 
 
 DWORD WINAPI ScanAllIPv4(_In_ PCWSTR RemotePort)
+/*
+功能扫描整个IPv4的一个端口。扫描办法是SYN。
+*/
 {
     int ret = ERROR_SUCCESS;
     SCAN_CONTEXT ScanContext = {0};
@@ -36,6 +39,11 @@ DWORD WINAPI ScanAllIPv4(_In_ PCWSTR RemotePort)
 
 
 DWORD WINAPI IPv4SubnetScan(_In_ PCWSTR IPv4Subnet, _In_ PCWSTR RemotePort)
+/*
+功能：扫描某个IPv4网段的一个端口。
+
+子网格式：0.0.0.0/0
+*/
 {
     int ret = ERROR_SUCCESS;
     SCAN_CONTEXT ScanContext = {0};
@@ -101,6 +109,9 @@ DWORD WINAPI IPv4SubnetScan(_In_ PCWSTR IPv4Subnet, _In_ PCWSTR RemotePort)
 
 
 DWORD WINAPI SynPortScan(_In_ PCWSTR IP, _In_ PCWSTR RemotePort)
+/*
+功能：扫描某个地址（IPv4/6）的某段端口（1-65535）。
+*/
 {
     int ret = ERROR_SUCCESS;
     SCAN_CONTEXT ScanContext = {0};
