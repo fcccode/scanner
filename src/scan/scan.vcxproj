@@ -159,7 +159,6 @@
     <ClCompile Include="igmp.cpp" />
     <ClCompile Include="ip.cpp" />
     <ClCompile Include="log.cpp" />
-    <ClCompile Include="options.cpp" />
     <ClCompile Include="os.cpp" />
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="port.cpp" />
@@ -187,7 +186,6 @@
     <ClInclude Include="igmp.h" />
     <ClInclude Include="ip.h" />
     <ClInclude Include="log.h" />
-    <ClInclude Include="options.h" />
     <ClInclude Include="os.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="port.h" />

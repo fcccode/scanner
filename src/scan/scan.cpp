@@ -3,7 +3,6 @@
 
 
 #include "pch.h"
-#include "options.h"
 #include "threads.h"
 #include "http.h"
 #include "arp.h"
