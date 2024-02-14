@@ -39,145 +39,6 @@ void WriteIPv4(const char * Filename)
 }
 
 
-template <class T>
-DWORD WINAPI SendThread(_In_ T * lpParameter)
-//DWORD WINAPI SendThread(_In_ LPVOID lpParameter)
-{
-    DWORD ret = ERROR_SUCCESS;
-
-    UNREFERENCED_PARAMETER(lpParameter);
-
-    for (;;) {
-        if (g_stop_scan) {
-            break;
-        }
-
-    }
-
-    return ret;
-}
-
-
-template <class T>
-DWORD WINAPI ReceiveThread(_In_ T * lpParameter)
-//DWORD WINAPI ReceiveThread(_In_ LPVOID lpParameter)
-{
-    DWORD ret = ERROR_SUCCESS;
-
-    UNREFERENCED_PARAMETER(lpParameter);
-
-    for (;;) {
-        if (g_stop_scan) {
-            break;
-        }
-
-    }
-
-    return ret;
-}
-
-
-template <class T>
-DWORD WINAPI ScanThread(_In_ T * lpParameter)
-//DWORD WINAPI ScanThread(_In_ LPVOID lpParameter)
-/*
-功能：扫描线程的入口。
-
-步骤：
-1.创建MAXIMUM_WAIT_OBJECTS的发送线程（可以考虑挂起状态）。
-2.创建MAXIMUM_WAIT_OBJECTS的接收线程（可以考虑挂起状态）。
-3.进入等待状态，等待扫描完成或者用户的退出指令。
-  先等待扫描线程，后等待接收线程，这中间可以停几秒。
-4.处理扫描结果，如：写入XML/JSON/SQLITE等。
-5.扫描的结果存在内存中（这样快），考虑map和set结构。
-*/
-{
-    DWORD ret = ERROR_SUCCESS;
-
-    UNREFERENCED_PARAMETER(lpParameter);
-
-    //////////////////////////////////////////////////////////////////////////////////////////////
-
-    //PMYDATA SendDataArray[MAXIMUM_WAIT_OBJECTS];
-    DWORD   SendThreadIdArray[MAXIMUM_WAIT_OBJECTS] = {};
-    HANDLE  SendThreadArray[MAXIMUM_WAIT_OBJECTS] = {};
-
-    for (int i = 0; i < MAXIMUM_WAIT_OBJECTS; i++) {
-        //pDataArray[i] = (PMYDATA)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof(MYDATA));
-        //if (pDataArray[i] == NULL) {
-        //    ExitProcess(2);
-        //}
-
-        SendThreadArray[i] = CreateThread(NULL,
-                                          0,
-                                          SendThread,
-                                          NULL,//pDataArray[i], 
-                                          0,
-                                          &SendThreadIdArray[i]);
-        if (SendThreadArray[i] == NULL) {
-            ErrorHandler((LPTSTR)TEXT("CreateThread"));
-            ExitProcess(3);
-        }
-    }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////
-
-        //PMYDATA ReceiveDataArray[MAXIMUM_WAIT_OBJECTS];
-    DWORD   ReceiveThreadIdArray[MAXIMUM_WAIT_OBJECTS] = {};
-    HANDLE  ReceiveThreadArray[MAXIMUM_WAIT_OBJECTS] = {};
-
-    for (int i = 0; i < MAXIMUM_WAIT_OBJECTS; i++) {
-        //pDataArray[i] = (PMYDATA)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof(MYDATA));
-        //if (pDataArray[i] == NULL) {
-        //    ExitProcess(2);
-        //}
-
-        ReceiveThreadArray[i] = CreateThread(NULL,
-                                             0,
-                                             SendThread,
-                                             NULL,//pDataArray[i], 
-                                             0,
-                                             &ReceiveThreadIdArray[i]);
-        if (ReceiveThreadArray[i] == NULL) {
-            ErrorHandler((LPTSTR)TEXT("CreateThread"));
-            ExitProcess(3);
-        }
-    }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////
-
-    WaitForMultipleObjects(MAXIMUM_WAIT_OBJECTS, SendThreadArray, TRUE, INFINITE);
-
-    for (int i = 0; i < MAXIMUM_WAIT_OBJECTS; i++) {
-        CloseHandle(SendThreadArray[i]);
-        //if (pDataArray[i] != NULL) {
-        //    HeapFree(GetProcessHeap(), 0, pDataArray[i]);
-        //    pDataArray[i] = NULL;    // Ensure address is not reused.
-        //}
-    }
-
-    Sleep(3000);
-
-    WaitForMultipleObjects(MAXIMUM_WAIT_OBJECTS, ReceiveThreadArray, TRUE, INFINITE);
-
-    for (int i = 0; i < MAXIMUM_WAIT_OBJECTS; i++) {
-        CloseHandle(ReceiveThreadArray[i]);
-        //if (pDataArray[i] != NULL) {
-        //    HeapFree(GetProcessHeap(), 0, pDataArray[i]);
-        //    pDataArray[i] = NULL;    // Ensure address is not reused.
-        //}
-    }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-    //////////////////////////////////////////////////////////////////////////////////////////////
-
-    return ret;
-}
-
-
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -506,11 +367,7 @@ DWORD WINAPI ScanAllIPv4Thread(_In_ LPVOID lpParameter)
         }
     }
 
-    //////////////////////////////////////////////////////////////////////////////////////////////
-
     OpenIPv4();
-
-    //////////////////////////////////////////////////////////////////////////////////////////////
 
     return ret;
 }
@@ -739,11 +596,7 @@ DWORD WINAPI IPv4SubnetScanThread(_In_ LPVOID lpParameter)
         }
     }
 
-    //////////////////////////////////////////////////////////////////////////////////////////////
-
     OpenIPv4();
-
-    //////////////////////////////////////////////////////////////////////////////////////////////
 
     return 0;
 }
@@ -1000,11 +853,7 @@ DWORD WINAPI IPv4PortScanThread(_In_ LPVOID lpParameter)
         }
     }
 
-    //////////////////////////////////////////////////////////////////////////////////////////////
-
     OpenPort();
-
-    //////////////////////////////////////////////////////////////////////////////////////////////
 
     return 0;
 }
@@ -1283,11 +1132,7 @@ DWORD WINAPI IPv6PortScanThread(_In_ LPVOID lpParameter)
         }
     }
 
-    //////////////////////////////////////////////////////////////////////////////////////////////
-
     OpenPort();
-
-    //////////////////////////////////////////////////////////////////////////////////////////////
 
     return 0;
 }
