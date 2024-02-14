@@ -62,14 +62,14 @@ https://docs.microsoft.com/en-us/windows/console/registering-a-control-handler-f
     FileName += "scan.db";
     WriteIPv4(FileName.c_str());
 
-    switch (fdwCtrlType) {        
+    switch (fdwCtrlType) {
     case CTRL_C_EVENT:// Handle the CTRL-C signal.
         printf("Ctrl-C event\n\n");
         InterlockedIncrement(&g_stop_scan);
-        return TRUE;        
+        return TRUE;
     case CTRL_CLOSE_EVENT:// CTRL-CLOSE: confirm that the user wants to exit.
         printf("Ctrl-Close event\n\n");
-        return TRUE;        
+        return TRUE;
     case CTRL_BREAK_EVENT:// Pass other signals to the next handler.
         printf("Ctrl-Break event\n\n");
         return FALSE;
@@ -129,17 +129,18 @@ int _cdecl wmain(_In_ int argc, _In_reads_(argc) WCHAR * argv[])
     else if (lstrcmpi(argv[1], L"Interface") == 0) {
         EnumAvailableInterface();
         GetAdapterNames();
+        return ret;
     }
 
     else if (lstrcmpi(argv[1], L"test") == 0) {
-        ret = test();
+        return test();
     }
 
     //主机/端口发现扫描
-    if (_wcsicmp(argv[1], L"ip") == 0) {
-        ret = ip(--argc, ++argv);
+    else if (_wcsicmp(argv[1], L"ip") == 0) {
+        return ip(--argc, ++argv);
     } else if (_wcsicmp(argv[1], L"port") == 0) {
-        ret = port(--argc, ++argv);
+        return port(--argc, ++argv);
     }
 
     //具体的协议扫描
@@ -161,14 +162,14 @@ int _cdecl wmain(_In_ int argc, _In_reads_(argc) WCHAR * argv[])
     }
 
     else if (lstrcmpi(argv[1], L"?") == 0) {
-        //Usage(argv[0]);
+        return Usage(argv[0]);
     } else if (lstrcmpi(argv[1], L"h") == 0) {
-        //Usage(argv[0]);
+        return Usage(argv[0]);
     } else if (lstrcmpi(argv[1], L"help") == 0) {
-        //Usage(argv[0]);
+        return Usage(argv[0]);
     } else {
-        ret = Usage(argv[0]);
+        return Usage(argv[0]);
     }
 
-    return ret;
+    return ERROR_SUCCESS;
 }
