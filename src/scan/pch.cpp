@@ -577,3 +577,22 @@ void GetExePath(_Out_writes_(cchDest) STRSAFE_LPSTR pszDest, _In_ size_t cchDest
 
     StringCchCopyA(pszDest, cchDest, szPath);
 }
+
+
+ADDRESS_FAMILY GetFamilyByIpStr(const char * ip)
+{
+    ADDRESS_FAMILY af = AF_MAX;
+    IN6_ADDR ipv6{};
+    IN_ADDR ipv4{};
+
+    if (InetPtonA(AF_INET6, ip, &ipv6)) {
+        af = AF_INET6;
+    } else if (InetPtonA(AF_INET, ip, &ipv4)) {
+        af = AF_INET;
+    } else {
+        //printf("ÎÞÐ§IP£º%s\n", ip);
+        af = AF_MAX;
+    }
+
+    return af;
+}

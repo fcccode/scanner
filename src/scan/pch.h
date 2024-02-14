@@ -223,3 +223,4 @@ void GetAdapterNames();
 bool GetFirstAvailableInterface(string & name);
 int GetActivityAdapter(string & ActivityAdapter);
 void GetExePath(_Out_writes_(cchDest) STRSAFE_LPSTR pszDest, _In_ size_t cchDest);
+ADDRESS_FAMILY GetFamilyByIpStr(const char * ip);

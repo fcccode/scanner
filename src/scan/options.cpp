@@ -7,27 +7,6 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-VOID Usage(TCHAR * exe)
-/*++
-Routine Description
-    Prints usage
---*/
-{
-    printf("本程序的用法如下：\r\n");
-    printf("用法概要：\"%ls\" 命令 地址 端口 选项 ...\r\n", exe);
-
-    printf("命令：SYN等\r\n");
-    printf("地址：包括IPv4/6以及IPv4子网掩码（0.0.0.0/0）\r\n");
-    printf("端口：单个及范围（[m,n]）\r\n");
-
-    printf("用SYN扫描IPv4全网（默认排除局域网和一些特殊的地址）：\"%ls\" SYN 443\r\n", exe);
-    printf("用SYN扫描某个IPv4网段的某个端口：\"%ls\" SYN 0.0.0.0/0 443\r\n", exe);
-    printf("用SYN扫描某个IPv4/6的所有的端口：\"%ls\" SYN IPv4/6 1-65535\r\n", exe);
-
-    printf("\r\n");
-}
-
-
 DWORD WINAPI ScanAllIPv4(_In_ PCWSTR RemotePort)
 {
     int ret = ERROR_SUCCESS;
@@ -206,30 +185,11 @@ int ParseCommandLine(_In_ int argc, _In_reads_(argc) WCHAR * argv[])
     int ret = ERROR_SUCCESS;
 
     switch (argc) {
-    case 1:
-        Usage(argv[0]);
-        break;
-    case 2:
-        if (lstrcmpi(argv[1], L"Interface") == 0) {
-            EnumAvailableInterface();
-            GetAdapterNames();
-        } else if (lstrcmpi(argv[1], L"?") == 0) {
-            Usage(argv[0]);
-        } else if (lstrcmpi(argv[1], L"h") == 0) {
-            Usage(argv[0]);
-        } else if (lstrcmpi(argv[1], L"help") == 0) {
-            Usage(argv[0]);
-        } else if (lstrcmpi(argv[1], L"test") == 0) {
-            test();
-        } else {
-            Usage(argv[0]);
-        }
-        break;
     case 3:
         if (lstrcmpi(argv[1], L"SYN") == 0) {
             ret = ScanAllIPv4(argv[2]);
         } else {
-            Usage(argv[0]);
+            //Usage(argv[0]);
         }
         break;
     case 4:
@@ -242,14 +202,11 @@ int ParseCommandLine(_In_ int argc, _In_reads_(argc) WCHAR * argv[])
                 ret = IPv4SubnetScan(argv[2], argv[3]);
             }
         } else {
-            Usage(argv[0]);
+            //Usage(argv[0]);
         }
         break;
-    case 5:
-        Usage(argv[0]);
-        break;
     default:
-        Usage(argv[0]);
+        //Usage(argv[0]);
         break;
     }    
 

@@ -24,6 +24,29 @@ void banner()
 }
 
 
+int Usage(TCHAR * exe)
+/*++
+Routine Description
+    Prints usage
+--*/
+{
+    printf("本程序的用法如下：\r\n");
+    printf("用法概要：\"%ls\" 命令 地址 端口 选项 ...\r\n", exe);
+
+    printf("命令：SYN等\r\n");
+    printf("地址：包括IPv4/6以及IPv4子网掩码（0.0.0.0/0）\r\n");
+    printf("端口：单个及范围（[m,n]）\r\n");
+
+    printf("用SYN扫描IPv4全网（默认排除局域网和一些特殊的地址）：\"%ls\" SYN 443\r\n", exe);
+    printf("用SYN扫描某个IPv4网段的某个端口：\"%ls\" SYN 0.0.0.0/0 443\r\n", exe);
+    printf("用SYN扫描某个IPv4/6的所有的端口：\"%ls\" SYN IPv4/6 1-65535\r\n", exe);
+
+    printf("\r\n");
+
+    return ERROR_SUCCESS;
+}
+
+
 BOOL WINAPI CtrlHandler(DWORD fdwCtrlType)
 /*
 
@@ -91,7 +114,55 @@ int _cdecl wmain(_In_ int argc, _In_reads_(argc) WCHAR * argv[])
         return ERROR_DLL_INIT_FAILED;
     }
 
-    ret = ParseCommandLine(argc, argv);    
+    //ret = ParseCommandLine(argc, argv);    
+
+    if (1 == argc) {
+        return Usage(argv[0]);
+    }
+
+    else if (lstrcmpi(argv[1], L"Interface") == 0) {
+        EnumAvailableInterface();
+        GetAdapterNames();
+    }
+
+    else if (lstrcmpi(argv[1], L"test") == 0) {
+        //test();
+    }
+
+    //主机/端口发现扫描
+    if (_wcsicmp(argv[1], L"ip") == 0) {
+        //ip(--argc, ++argv);
+    } else if (_wcsicmp(argv[1], L"port") == 0) {
+        //port(--argc, ++argv);
+    }
+
+    //具体的协议扫描
+    else if (_wcsicmp(argv[1], L"https") == 0) {
+        //https(--argc, ++argv);
+    } else if (_wcsicmp(argv[1], L"rdp") == 0) {
+        //rdp(--argc, ++argv);
+    } else if (_wcsicmp(argv[1], L"ssh") == 0) {
+        //ssh(--argc, ++argv);
+    } else if (_wcsicmp(argv[1], L"smtp") == 0) {
+        //smtp(--argc, ++argv);
+    } else if (_wcsicmp(argv[1], L"dns") == 0) {
+        //dns(--argc, ++argv);
+    }
+
+    //漏洞扫描
+    else if (_wcsicmp(argv[1], L"vul") == 0) {
+        //vul(--argc, ++argv);
+    }
+
+    else if (lstrcmpi(argv[1], L"?") == 0) {
+        //Usage(argv[0]);
+    } else if (lstrcmpi(argv[1], L"h") == 0) {
+        //Usage(argv[0]);
+    } else if (lstrcmpi(argv[1], L"help") == 0) {
+        //Usage(argv[0]);
+    } else {
+        ret = Usage(argv[0]);
+    }
 
     return ret;
 }

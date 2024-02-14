@@ -52,16 +52,16 @@ void DumpServerInfo(SSL * ssl)
     bool is_secure_renegotiation_support = SSL_get_secure_renegotiation_support(ssl);
     printf("is_secure_renegotiation_support:%s.\r\n", is_secure_renegotiation_support ? "yes" : "no");
 
-    const char * psk_identity_hint = SSL_get_psk_identity_hint(ssl);
-    const char * psk_identity = SSL_get_psk_identity(ssl);
+    //const char * psk_identity_hint = SSL_get_psk_identity_hint(ssl);
+    //const char * psk_identity = SSL_get_psk_identity(ssl);
 
     //char * srp_username = SSL_get_srp_username(ssl);
     //char * srp_userinfo = SSL_get_srp_userinfo(ssl);
 
-    int security_level = SSL_get_security_level(ssl);
+    //int security_level = SSL_get_security_level(ssl);
 
-    unsigned char random[MAX_PATH] = {};
-    size_t random_len = SSL_get_server_random(ssl, random, sizeof(random));
+    //unsigned char random[MAX_PATH] = {};
+    //size_t random_len = SSL_get_server_random(ssl, random, sizeof(random));
 
     SSL_SESSION * ssl_session = SSL_get_session(ssl);
 
