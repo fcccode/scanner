@@ -41,9 +41,12 @@ Routine Description
     printf("地址：包括IPv4/6以及IPv4子网掩码（0.0.0.0/0）\r\n");
     printf("端口：单个及范围（[m,n]）\r\n");
 
-    printf("用SYN扫描IPv4全网（默认排除局域网和一些特殊的地址）：\"%ls\" SYN 443\r\n", exe);
-    printf("用SYN扫描某个IPv4网段的某个端口：\"%ls\" SYN 0.0.0.0/0 443\r\n", exe);
-    printf("用SYN扫描某个IPv4/6的所有的端口：\"%ls\" SYN IPv4/6 1-65535\r\n", exe);
+    printf("获取网卡信息：\"%ls\" Interface\r\n", exe);
+    printf("临时测试专用：\"%ls\" test\r\n", exe);
+
+    printf("用SYN扫描IPv4全网（默认排除局域网和一些特殊的地址）：\"%ls\" port syn 443\r\n", exe);
+    printf("用SYN扫描某个IPv4网段的某个端口：\"%ls\" port SYN 0.0.0.0/0 443\r\n", exe);
+    printf("用SYN扫描某个IPv4/6的所有的端口：\"%ls\" port SYN IPv4/6 1-65535\r\n", exe);
 
     printf("\r\n");
 
