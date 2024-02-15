@@ -35,14 +35,12 @@ Routine Description
     banner();
 
     printf("本程序的用法如下：\r\n");
-    printf("用法概要：\"%ls\" 命令 地址 端口 选项 ...\r\n", exe);
-
-    printf("命令：SYN等\r\n");
-    printf("地址：包括IPv4/6以及IPv4子网掩码（0.0.0.0/0）\r\n");
-    printf("端口：单个及范围（[m,n]）\r\n");
 
     printf("获取网卡信息：\"%ls\" Interface\r\n", exe);
     printf("临时测试专用：\"%ls\" test\r\n", exe);
+
+    printf("ARP获取局域网的IPv4：\"%ls\" ip arp IPv4 masks\r\n", exe);//scan.exe ip arp 192.168.1.7 24
+    //printf("ICMP获取网互联的IPv4/6：\"%ls\" ip icmp\r\n", exe);
 
     printf("用SYN扫描IPv4全网（默认排除局域网和一些特殊的地址）：\"%ls\" port syn 443\r\n", exe);
     printf("用SYN扫描某个IPv4网段的某个端口：\"%ls\" port SYN 0.0.0.0/0 443\r\n", exe);
