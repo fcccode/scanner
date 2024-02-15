@@ -105,7 +105,7 @@ void ReplyAck(struct pcap_pkthdr * header, const BYTE * pkt_data, PSCAN_CONTEXT 
                     LeaveCriticalSection(&g_IPv4Lock);
 
                     if (ret.second) {
-                        if (0 == g_IPv4.size() % 100) {
+                        if (0 == g_IPv4.size() % 10) {
                             printf("%-16s:%d open, 已经处理%I64d，完成比%f%%, 获取到%zd.\n",
                                    SrcIp,
                                    ntohs(tcp4->tcp_hdr.th_sport),
@@ -267,7 +267,7 @@ DWORD WINAPI ScanAllIPv4Thread(_In_ LPVOID lpParameter)
         return ERROR_INVALID_HANDLE;
     }
 
-    const char * sql = "CREATE TABLE v4_443(IPv4 TEXT PRIMARY KEY NOT NULL,Date TEXT,Os TEXT,OsVer TEXT, IsHttp TEXT, AppName TEXT, AppVer TEXT, Certificate TEXT);";
+    const char * sql = "CREATE TABLE IF NOT EXISTS v4_443(IPv4 TEXT PRIMARY KEY NOT NULL,Date TEXT,Os TEXT,OsVer TEXT, IsHttp TEXT, AppName TEXT, AppVer TEXT, Certificate TEXT);";
     sqlite(ScanContext->FileName->c_str(), sql);
 
     //////////////////////////////////////////////////////////////////////////////////////////////
@@ -503,7 +503,7 @@ DWORD WINAPI IPv4SubnetScanThread(_In_ LPVOID lpParameter)
         return ERROR_INVALID_HANDLE;
     }
 
-    const char * sql = "CREATE TABLE v4_443(IPv4 TEXT PRIMARY KEY NOT NULL,Date TEXT,Os TEXT,OsVer TEXT, IsHttp TEXT, AppName TEXT, AppVer TEXT, Certificate TEXT);";
+    const char * sql = "CREATE TABLE IF NOT EXISTS v4_443(IPv4 TEXT PRIMARY KEY NOT NULL,Date TEXT,Os TEXT,OsVer TEXT, IsHttp TEXT, AppName TEXT, AppVer TEXT, Certificate TEXT);";
     sqlite(ScanContext->FileName->c_str(), sql);
 
     //////////////////////////////////////////////////////////////////////////////////////////////
