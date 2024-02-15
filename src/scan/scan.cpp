@@ -115,6 +115,13 @@ DWORD init()
 }
 
 
+void UnInit()
+{
+
+
+}
+
+
 int _cdecl wmain(_In_ int argc, _In_reads_(argc) WCHAR * argv[])
 {
     int ret = init();
@@ -123,7 +130,7 @@ int _cdecl wmain(_In_ int argc, _In_reads_(argc) WCHAR * argv[])
     }
 
     if (1 == argc) {
-        return Usage(argv[0]);
+        ret = Usage(argv[0]);
     }
 
     else if (lstrcmpi(argv[1], L"Interface") == 0) {
@@ -133,14 +140,14 @@ int _cdecl wmain(_In_ int argc, _In_reads_(argc) WCHAR * argv[])
     }
 
     else if (lstrcmpi(argv[1], L"test") == 0) {
-        return test();
+        ret = test();
     }
 
     //主机/端口发现扫描
     else if (_wcsicmp(argv[1], L"ip") == 0) {
-        return ip(--argc, ++argv);
+        ret = ip(--argc, ++argv);
     } else if (_wcsicmp(argv[1], L"port") == 0) {
-        return port(--argc, ++argv);
+        ret = port(--argc, ++argv);
     }
 
     //具体的协议扫描
@@ -162,14 +169,16 @@ int _cdecl wmain(_In_ int argc, _In_reads_(argc) WCHAR * argv[])
     }
 
     else if (lstrcmpi(argv[1], L"?") == 0) {
-        return Usage(argv[0]);
+        ret = Usage(argv[0]);
     } else if (lstrcmpi(argv[1], L"h") == 0) {
-        return Usage(argv[0]);
+        ret = Usage(argv[0]);
     } else if (lstrcmpi(argv[1], L"help") == 0) {
-        return Usage(argv[0]);
+        ret = Usage(argv[0]);
     } else {
-        return Usage(argv[0]);
+        ret = Usage(argv[0]);
     }
 
-    return ERROR_SUCCESS;
+    UnInit();
+
+    return ret;
 }
