@@ -2,4 +2,4 @@
 
 #include "pch.h"
 
-void ArpScan(DWORD start, BYTE mask);
+int ArpScan(DWORD start, BYTE mask);

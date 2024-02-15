@@ -56,7 +56,7 @@ void GetMacOfIPv4(IPAddr DestIp, IPAddr SrcIp)
 }
 
 
-void ArpScan(DWORD start, BYTE mask)
+int ArpScan(DWORD start, BYTE mask)
 /*
 功能：扫描局域网的IPv4。顺便获取了MAC。
 
@@ -122,4 +122,6 @@ void ArpScan(DWORD start, BYTE mask)
 
         GetMacOfIPv4(temp.S_un.S_addr, 0);
     }
+
+    return ERROR_SUCCESS;
 }

@@ -275,7 +275,7 @@ void GetInterfaceFlagString(bpf_u_int32 flags, string & InterfaceFlagString)
         InterfaceFlagString += " LOOPBACK;";
     }
 
-    if (FlagContain(flags , PCAP_IF_UP)) {
+    if (FlagContain(flags, PCAP_IF_UP)) {
         InterfaceFlagString += " UP;";
     }
 
