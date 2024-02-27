@@ -102,11 +102,22 @@ void ReplyAck(struct pcap_pkthdr * header, const BYTE * pkt_data, PSCAN_CONTEXT 
                 if (RemotePort == ntohs(tcp4->tcp_hdr.th_sport)) {
                     EnterCriticalSection(&g_IPv4Lock);
                     auto ret = g_IPv4.insert(tcp4->ip_hdr.SourceAddress.S_un.S_addr);
+                    if (ret.second) {
+                        char Tmp[MAX_PATH]{};
+                        const char * sql = "INSERT INTO v4_443 (IPv4, Date) VALUES ('%s', '%s');";
+                        sprintf_s(Tmp, sql, SrcIp, g_Date);
+
+                        string FileName;
+                        FileName = g_ExePath;
+                        FileName += "scan.db";
+
+                        sqlite(FileName.c_str(), Tmp);
+                    }
                     LeaveCriticalSection(&g_IPv4Lock);
 
                     if (ret.second) {
-                        if (0 == g_IPv4.size() % 10) {
-                            printf("%-16s:%d open, 已经处理%I64d，完成比%f%%, 获取到%zd.\n",
+                        if (0 == g_IPv4.size() % 100) {
+                            printf("%-15s:%d open, 已经处理%I64d，完成比%f%%, 获取到%zd.\n",
                                    SrcIp,
                                    ntohs(tcp4->tcp_hdr.th_sport),
                                    g_Send_IP,
@@ -234,36 +245,30 @@ DWORD WINAPI ScanAllIPv4Thread(_In_ LPVOID lpParameter)
 */
 {
     DWORD ret = ERROR_SUCCESS;
-    string source;
     PSCAN_CONTEXT ScanContext = (PSCAN_CONTEXT)lpParameter;
-
-    GetActivityAdapter(source);
 
     pcap_t * fp;
     int snaplen = sizeof(RAW_TCP) + sizeof(TCP_OPT_MSS);
     char errbuf[PCAP_ERRBUF_SIZE];
-    if ((fp = pcap_open(source.c_str(),				// name of the device
+    if ((fp = pcap_open(g_ActivityAdapterName.c_str(),				// name of the device
                         snaplen,// portion of the packet to capture
                         PCAP_OPENFLAG_PROMISCUOUS, 	// promiscuous mode
                         1,				    // read timeout
                         NULL,				// authentication on the remote machine
                         errbuf				// error buffer
     )) == NULL) {
-        fprintf(stderr, "\nUnable to open the adapter. %s is not supported by Npcap\n", source.c_str());
+        fprintf(stderr, "\nUnable to open the adapter. %s is not supported by Npcap\n", g_ActivityAdapterName.c_str());
         return ERROR_INVALID_HANDLE;
     }
 
-    UINT8 SrcMac[6] = {0};
-    GetMacAddress(source.c_str(), SrcMac);
-
     IN_ADDR SourceAddress;
-    GetOneAddress(source.c_str(), &SourceAddress, NULL, NULL);
+    GetOneAddress(g_ActivityAdapterName.c_str(), &SourceAddress, NULL, NULL);
 
     UINT8 DesMac[6] = {0};
     GetGatewayMacByIPv4(inet_ntoa(SourceAddress), DesMac);
     if (DesMac[0] == 0 && DesMac[1] == 0 && DesMac[2] == 0 &&
         DesMac[3] == 0 && DesMac[4] == 0 && DesMac[5] == 0) {
-        fprintf(stderr, "没有获取到%s的网关的物理地址，扫描退出\n", source.c_str());
+        fprintf(stderr, "没有获取到%s的网关的物理地址，扫描退出\n", g_ActivityAdapterName.c_str());
         return ERROR_INVALID_HANDLE;
     }
 
@@ -294,7 +299,7 @@ DWORD WINAPI ScanAllIPv4Thread(_In_ LPVOID lpParameter)
         SendDataArray[i]->SourceAddress.IPv4.S_un.S_addr = SourceAddress.S_un.S_addr;
         SendDataArray[i]->RemotePort = ScanContext->RemotePort;
         SendDataArray[i]->FileName = ScanContext->FileName;
-        CopyMemory(SendDataArray[i]->SrcMac, SrcMac, sizeof(SrcMac));
+        CopyMemory(SendDataArray[i]->SrcMac, g_ActivityAdapterMac, sizeof(g_ActivityAdapterMac));
         CopyMemory(SendDataArray[i]->DesMac, DesMac, sizeof(DesMac));
 
         SendThreadArray[i] = CreateThread(NULL,
@@ -471,35 +476,28 @@ DWORD WINAPI IPv4SubnetScanThread(_In_ LPVOID lpParameter)
 */
 {
     PSCAN_CONTEXT ScanContext = (PSCAN_CONTEXT)lpParameter;
-    string source;
-
-    GetActivityAdapter(source);
-
     pcap_t * fp;
     int snaplen = sizeof(RAW_TCP) + sizeof(TCP_OPT_MSS);
     char errbuf[PCAP_ERRBUF_SIZE];
-    if ((fp = pcap_open(source.c_str(),				// name of the device
+    if ((fp = pcap_open(g_ActivityAdapterName.c_str(),				// name of the device
                         snaplen,// portion of the packet to capture
                         PCAP_OPENFLAG_PROMISCUOUS, 	// promiscuous mode
                         1,				    // read timeout
                         NULL,				// authentication on the remote machine
                         errbuf				// error buffer
     )) == NULL) {
-        fprintf(stderr, "\nUnable to open the adapter. %s is not supported by Npcap\n", source.c_str());
+        fprintf(stderr, "\nUnable to open the adapter. %s is not supported by Npcap\n", g_ActivityAdapterName.c_str());
         return ERROR_INVALID_HANDLE;
     }
 
-    UINT8 SrcMac[6] = {0};
-    GetMacAddress(source.c_str(), SrcMac);
-
     IN_ADDR SourceAddress = {0};
-    GetOneAddress(source.c_str(), &SourceAddress, NULL, NULL);
+    GetOneAddress(g_ActivityAdapterName.c_str(), &SourceAddress, NULL, NULL);
 
     UINT8 DesMac[6] = {0};
     GetGatewayMacByIPv4(inet_ntoa(SourceAddress), DesMac);
     if (DesMac[0] == 0 && DesMac[1] == 0 && DesMac[2] == 0 &&
         DesMac[3] == 0 && DesMac[4] == 0 && DesMac[5] == 0) {
-        fprintf(stderr, "没有获取到%s的网关的物理地址，扫描退出\n", source.c_str());
+        fprintf(stderr, "没有获取到%s的网关的物理地址，扫描退出\n", g_ActivityAdapterName.c_str());
         return ERROR_INVALID_HANDLE;
     }
 
@@ -526,7 +524,7 @@ DWORD WINAPI IPv4SubnetScanThread(_In_ LPVOID lpParameter)
         SendDataArray[i]->fp = fp;
         SendDataArray[i]->SourceAddress.IPv4.S_un.S_addr = SourceAddress.S_un.S_addr;
         SendDataArray[i]->RemotePort = ScanContext->RemotePort;
-        CopyMemory(SendDataArray[i]->SrcMac, SrcMac, sizeof(SrcMac));
+        CopyMemory(SendDataArray[i]->SrcMac, g_ActivityAdapterMac, sizeof(g_ActivityAdapterMac));
         CopyMemory(SendDataArray[i]->DesMac, DesMac, sizeof(DesMac));
 
         SendThreadArray[i] = CreateThread(NULL,
@@ -722,36 +720,30 @@ DWORD WINAPI IPv4PortScanThread(_In_ LPVOID lpParameter)
 */
 {
     PSCAN_CONTEXT ScanContext = (PSCAN_CONTEXT)lpParameter;
-    string source;
-
-    GetActivityAdapter(source);
-
     pcap_t * fp;
     int snaplen = sizeof(RAW_TCP) + sizeof(TCP_OPT_MSS);
     char errbuf[PCAP_ERRBUF_SIZE];
-    if ((fp = pcap_open(source.c_str(),				// name of the device
+    if ((fp = pcap_open(g_ActivityAdapterName.c_str(),				// name of the device
                         snaplen,// portion of the packet to capture
                         PCAP_OPENFLAG_PROMISCUOUS, 	// promiscuous mode
                         1,				    // read timeout
                         NULL,				// authentication on the remote machine
                         errbuf				// error buffer
     )) == NULL) {
-        fprintf(stderr, "\nUnable to open the adapter. %s is not supported by Npcap\n", source.c_str());
+        fprintf(stderr, "\nUnable to open the adapter. %s is not supported by Npcap\n", g_ActivityAdapterName.c_str());
         return ERROR_INVALID_HANDLE;
     }
 
-    UINT8 SrcMac[6] = {0};
-    GetMacAddress(source.c_str(), SrcMac);
-    if (SrcMac[0] == 0 && SrcMac[1] == 0 && SrcMac[2] == 0 &&
-        SrcMac[3] == 0 && SrcMac[4] == 0 && SrcMac[5] == 0) {
-        fprintf(stderr, "没有获取到%s的网卡的物理地址，扫描退出\n", source.c_str());
+    if (g_ActivityAdapterMac[0] == 0 && g_ActivityAdapterMac[1] == 0 && g_ActivityAdapterMac[2] == 0 &&
+        g_ActivityAdapterMac[3] == 0 && g_ActivityAdapterMac[4] == 0 && g_ActivityAdapterMac[5] == 0) {
+        fprintf(stderr, "没有获取到%s的网卡的物理地址，扫描退出\n", g_ActivityAdapterName.c_str());
         return ERROR_INVALID_HANDLE;
     }
 
     IN_ADDR SourceAddress = IN4ADDR_ANY_INIT;
-    GetOneAddress(source.c_str(), &SourceAddress, NULL, NULL);
+    GetOneAddress(g_ActivityAdapterName.c_str(), &SourceAddress, NULL, NULL);
     if (IN4_IS_ADDR_UNSPECIFIED(&SourceAddress)) {
-        fprintf(stderr, "没有获取到%s的本机地址，扫描退出\n", source.c_str());
+        fprintf(stderr, "没有获取到%s的本机地址，扫描退出\n", g_ActivityAdapterName.c_str());
         return ERROR_INVALID_HANDLE;
     }
 
@@ -759,7 +751,7 @@ DWORD WINAPI IPv4PortScanThread(_In_ LPVOID lpParameter)
     GetGatewayMacByIPv4(inet_ntoa(SourceAddress), DesMac);
     if (DesMac[0] == 0 && DesMac[1] == 0 && DesMac[2] == 0 &&
         DesMac[3] == 0 && DesMac[4] == 0 && DesMac[5] == 0) {
-        fprintf(stderr, "没有获取到%s的网关的物理地址，扫描退出\n", source.c_str());
+        fprintf(stderr, "没有获取到%s的网关的物理地址，扫描退出\n", g_ActivityAdapterName.c_str());
         return ERROR_INVALID_HANDLE;
     }
 
@@ -783,7 +775,7 @@ DWORD WINAPI IPv4PortScanThread(_In_ LPVOID lpParameter)
         SendDataArray[i]->fp = fp;
         SendDataArray[i]->SourceAddress.IPv4.S_un.S_addr = SourceAddress.S_un.S_addr;
         SendDataArray[i]->EndPort = ScanContext->EndPort;
-        CopyMemory(SendDataArray[i]->SrcMac, SrcMac, sizeof(SrcMac));
+        CopyMemory(SendDataArray[i]->SrcMac, g_ActivityAdapterMac, sizeof(g_ActivityAdapterMac));
         CopyMemory(SendDataArray[i]->DesMac, DesMac, sizeof(DesMac));
 
         SendThreadArray[i] = CreateThread(NULL,
@@ -960,36 +952,31 @@ DWORD WINAPI IPv6PortScanThread(_In_ LPVOID lpParameter)
 {
     PSCAN_CONTEXT ScanContext = (PSCAN_CONTEXT)lpParameter;
 
-    //string source = "rpcap://\\Device\\NPF_{FFE7800C-E306-41B7-A3FE-5C6559A83F1D}";//局域网测试专用。
-
-    string source;
-    GetActivityAdapter(source);//互联网测试。
+    //string g_ActivityAdapterName = "rpcap://\\Device\\NPF_{FFE7800C-E306-41B7-A3FE-5C6559A83F1D}";//局域网测试专用。
 
     pcap_t * fp;
     int snaplen = sizeof(RAW6_TCP);
     char errbuf[PCAP_ERRBUF_SIZE];
-    if ((fp = pcap_open(source.c_str(),				// name of the device
+    if ((fp = pcap_open(g_ActivityAdapterName.c_str(),				// name of the device
                         snaplen,// portion of the packet to capture
                         PCAP_OPENFLAG_PROMISCUOUS, 	// promiscuous mode
                         1,				    // read timeout
                         NULL,				// authentication on the remote machine
                         errbuf				// error buffer
     )) == NULL) {
-        fprintf(stderr, "\nUnable to open the adapter. %s is not supported by Npcap\n", source.c_str());
+        fprintf(stderr, "\nUnable to open the adapter. %s is not supported by Npcap\n", g_ActivityAdapterName.c_str());
         return ERROR_INVALID_HANDLE;
     }
 
-    UINT8 SrcMac[6] = {0};
-    GetMacAddress(source.c_str(), SrcMac);
-    if (SrcMac[0] == 0 && SrcMac[1] == 0 && SrcMac[2] == 0 &&
-        SrcMac[3] == 0 && SrcMac[4] == 0 && SrcMac[5] == 0) {
-        fprintf(stderr, "没有获取到%s的网卡的物理地址，扫描退出\n", source.c_str());
+    if (g_ActivityAdapterMac[0] == 0 && g_ActivityAdapterMac[1] == 0 && g_ActivityAdapterMac[2] == 0 &&
+        g_ActivityAdapterMac[3] == 0 && g_ActivityAdapterMac[4] == 0 && g_ActivityAdapterMac[5] == 0) {
+        fprintf(stderr, "没有获取到%s的网卡的物理地址，扫描退出\n", g_ActivityAdapterName.c_str());
         return ERROR_INVALID_HANDLE;
     }
 
     IN6_ADDR LinkLocalIPv6Address = IN6ADDR_ANY_INIT;
     IN6_ADDR GlobalIPv6Address = IN6ADDR_ANY_INIT;
-    GetOneAddress(source.c_str(), NULL, &LinkLocalIPv6Address, &GlobalIPv6Address);
+    GetOneAddress(g_ActivityAdapterName.c_str(), NULL, &LinkLocalIPv6Address, &GlobalIPv6Address);
 
     DWORD ipbufferlength = 46;
     char ipstringbuffer[46] = {0};
@@ -1050,7 +1037,7 @@ DWORD WINAPI IPv6PortScanThread(_In_ LPVOID lpParameter)
         SendDataArray[i]->StartPort = ScanContext->StartPort;
         SendDataArray[i]->fp = fp;
         SendDataArray[i]->EndPort = ScanContext->EndPort;
-        CopyMemory(SendDataArray[i]->SrcMac, SrcMac, sizeof(SrcMac));
+        CopyMemory(SendDataArray[i]->SrcMac, g_ActivityAdapterMac, sizeof(g_ActivityAdapterMac));
         CopyMemory(SendDataArray[i]->DesMac, DesMac, sizeof(DesMac));
 
         if (IN6_IS_ADDR_LINKLOCAL(&ScanContext->DestinationAddress.IPv6)) {

@@ -169,9 +169,6 @@ void Syn4ScanTest(const char * source, const char * RemoteIPv4, WORD RemotePort)
         return;
     }
 
-    UINT8 SrcMac[6];
-    GetMacAddress(source, SrcMac);
-
     IN_ADDR SourceAddress;
     GetOneAddress(source, &SourceAddress, NULL, NULL);
 
@@ -181,7 +178,7 @@ void Syn4ScanTest(const char * source, const char * RemoteIPv4, WORD RemotePort)
     UINT8 DesMac[6];
     GetGatewayMacByIPv4(inet_ntoa(SourceAddress), DesMac);
 
-    SendSyn4(fp, SrcMac, DesMac, &SourceAddress, &DestinationAddress, RemotePort);
+    SendSyn4(fp, g_ActivityAdapterMac, DesMac, &SourceAddress, &DestinationAddress, RemotePort);
 
     UINT res;
     struct pcap_pkthdr * header;
@@ -219,9 +216,6 @@ void Syn4ScanTest0(const char * source, const char * RemoteIPv4, WORD RemotePort
         return;
     }
 
-    UINT8 SrcMac[6];
-    GetMacAddress(source, SrcMac);
-
     IN_ADDR SourceAddress;
     GetOneAddress(source, &SourceAddress, NULL, NULL);
 
@@ -233,7 +227,7 @@ void Syn4ScanTest0(const char * source, const char * RemoteIPv4, WORD RemotePort
     UINT8 DesMac[6];
     GetGatewayMacByIPv4(inet_ntoa(SourceAddress), DesMac);
 
-    PacketizeSyn4(SrcMac,
+    PacketizeSyn4(g_ActivityAdapterMac,
                   DesMac,
                   &SourceAddress,
                   &DestinationAddress,
@@ -287,9 +281,6 @@ void Syn6ScanTest(const char * source, const char * RemoteIPv6, WORD RemotePort)
         return;
     }
 
-    UINT8 SrcMac[6];
-    GetMacAddress(source, SrcMac);
-
     IN6_ADDR LinkLocalIPv6Address = IN6ADDR_ANY_INIT;
     IN6_ADDR GlobalIPv6Address = IN6ADDR_ANY_INIT;
     GetOneAddress(source, NULL, &LinkLocalIPv6Address, &GlobalIPv6Address);
@@ -336,7 +327,7 @@ void Syn6ScanTest(const char * source, const char * RemoteIPv6, WORD RemotePort)
     }
 
     SendSyn6(fp,
-             SrcMac,
+             g_ActivityAdapterMac,
              DesMac,
              IN6_IS_ADDR_LINKLOCAL(&DestinationAddress) ? &LinkLocalIPv6Address : &GlobalIPv6Address,
              &DestinationAddress,
@@ -379,9 +370,6 @@ void Syn6ScanTest0(const char * source, const char * RemoteIPv6, WORD RemotePort
         return;
     }
 
-    UINT8 SrcMac[6];
-    GetMacAddress(source, SrcMac);
-
     IN6_ADDR LinkLocalIPv6Address = IN6ADDR_ANY_INIT;
     IN6_ADDR GlobalIPv6Address = IN6ADDR_ANY_INIT;
     GetOneAddress(source, NULL, &LinkLocalIPv6Address, &GlobalIPv6Address);
@@ -417,7 +405,7 @@ void Syn6ScanTest0(const char * source, const char * RemoteIPv6, WORD RemotePort
         return;
     }
 
-    PacketizeSyn6(SrcMac,
+    PacketizeSyn6(g_ActivityAdapterMac,
                   DesMac,
                   IN6_IS_ADDR_LINKLOCAL(&DestinationAddress) ? &LinkLocalIPv6Address : &GlobalIPv6Address,
                   &DestinationAddress,

@@ -13,6 +13,8 @@
 
 CHAR g_ExePath[MAX_PATH]{};
 CHAR g_Date[MAX_PATH];
+string g_ActivityAdapterName;
+UINT8 g_ActivityAdapterMac[6] = {0};
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -111,6 +113,10 @@ DWORD init()
         fprintf(stderr, "Couldn't load Npcap\n");
         return ERROR_DLL_INIT_FAILED;
     }
+
+    GetActivityAdapter(g_ActivityAdapterName);
+
+    GetMacAddress(g_ActivityAdapterName.c_str(), g_ActivityAdapterMac);
 
     return ret;
 }
