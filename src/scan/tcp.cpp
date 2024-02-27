@@ -169,16 +169,10 @@ void Syn4ScanTest(const char * source, const char * RemoteIPv4, WORD RemotePort)
         return;
     }
 
-    IN_ADDR SourceAddress;
-    GetOneAddress(source, &SourceAddress, NULL, NULL);
-
     IN_ADDR DestinationAddress;
     DestinationAddress.S_un.S_addr = inet_addr(RemoteIPv4);
 
-    UINT8 DesMac[6];
-    GetGatewayMacByIPv4(inet_ntoa(SourceAddress), DesMac);
-
-    SendSyn4(fp, g_ActivityAdapterMac, DesMac, &SourceAddress, &DestinationAddress, RemotePort);
+    SendSyn4(fp, g_ActivityAdapterMac, g_AdapterGatewayMac, &g_AdapterIPv4ddress, &DestinationAddress, RemotePort);
 
     UINT res;
     struct pcap_pkthdr * header;
@@ -216,20 +210,14 @@ void Syn4ScanTest0(const char * source, const char * RemoteIPv4, WORD RemotePort
         return;
     }
 
-    IN_ADDR SourceAddress;
-    GetOneAddress(source, &SourceAddress, NULL, NULL);
-
     IN_ADDR DestinationAddress;
     DestinationAddress.S_un.S_addr = inet_addr(RemoteIPv4);
 
     WORD LocalPort = (WORD)RangedRand(3072, MAXWORD);
 
-    UINT8 DesMac[6];
-    GetGatewayMacByIPv4(inet_ntoa(SourceAddress), DesMac);
-
     PacketizeSyn4(g_ActivityAdapterMac,
-                  DesMac,
-                  &SourceAddress,
+                  g_AdapterGatewayMac,
+                  &g_AdapterIPv4ddress,
                   &DestinationAddress,
                   htons(LocalPort),
                   htons(RemotePort),
@@ -281,26 +269,22 @@ void Syn6ScanTest(const char * source, const char * RemoteIPv6, WORD RemotePort)
         return;
     }
 
-    IN6_ADDR LinkLocalIPv6Address = IN6ADDR_ANY_INIT;
-    IN6_ADDR GlobalIPv6Address = IN6ADDR_ANY_INIT;
-    GetOneAddress(source, NULL, &LinkLocalIPv6Address, &GlobalIPv6Address);
-
     DWORD ipbufferlength = 46;
     char ipstringbuffer[46] = {0};
-    inet_ntop(AF_INET6, &LinkLocalIPv6Address, ipstringbuffer, ipbufferlength);
+    inet_ntop(AF_INET6, &g_AdapterLinkLocalIPv6Address, ipstringbuffer, ipbufferlength);
 
     IN6_ADDR DestinationAddress = IN6ADDR_ANY_INIT;
     InetPtonA(AF_INET6, RemoteIPv6, &DestinationAddress);
 
     if (IN6_IS_ADDR_LINKLOCAL(&DestinationAddress)) {
-        if (IN6_IS_ADDR_UNSPECIFIED(&LinkLocalIPv6Address)) {
+        if (IN6_IS_ADDR_UNSPECIFIED(&g_AdapterLinkLocalIPv6Address)) {
             fprintf(stderr, "本网卡没有本地IPv6地址，不能进行IPv6局域网扫描\n");
             return;
         }
     }
 
     if (IN6_IS_ADDR_GLOBAL(&DestinationAddress)) {
-        if (IN6_IS_ADDR_UNSPECIFIED(&GlobalIPv6Address)) {
+        if (IN6_IS_ADDR_UNSPECIFIED(&g_AdapterGlobalIPv6Address)) {
             fprintf(stderr, "本网卡没有互联网IPv6地址，不能进行IPv6互联网扫描\n");
             return;
         }
@@ -329,7 +313,7 @@ void Syn6ScanTest(const char * source, const char * RemoteIPv6, WORD RemotePort)
     SendSyn6(fp,
              g_ActivityAdapterMac,
              DesMac,
-             IN6_IS_ADDR_LINKLOCAL(&DestinationAddress) ? &LinkLocalIPv6Address : &GlobalIPv6Address,
+             IN6_IS_ADDR_LINKLOCAL(&DestinationAddress) ? &g_AdapterLinkLocalIPv6Address : &g_AdapterGlobalIPv6Address,
              &DestinationAddress,
              htons(RemotePort));
 
@@ -370,26 +354,22 @@ void Syn6ScanTest0(const char * source, const char * RemoteIPv6, WORD RemotePort
         return;
     }
 
-    IN6_ADDR LinkLocalIPv6Address = IN6ADDR_ANY_INIT;
-    IN6_ADDR GlobalIPv6Address = IN6ADDR_ANY_INIT;
-    GetOneAddress(source, NULL, &LinkLocalIPv6Address, &GlobalIPv6Address);
-
     DWORD ipbufferlength = 46;
     char ipstringbuffer[46] = {0};
-    inet_ntop(AF_INET6, &LinkLocalIPv6Address, ipstringbuffer, ipbufferlength);
+    inet_ntop(AF_INET6, &g_AdapterLinkLocalIPv6Address, ipstringbuffer, ipbufferlength);
 
     IN6_ADDR DestinationAddress = IN6ADDR_ANY_INIT;
     InetPtonA(AF_INET6, RemoteIPv6, &DestinationAddress);
 
     if (IN6_IS_ADDR_LINKLOCAL(&DestinationAddress)) {
-        if (IN6_IS_ADDR_UNSPECIFIED(&LinkLocalIPv6Address)) {
+        if (IN6_IS_ADDR_UNSPECIFIED(&g_AdapterLinkLocalIPv6Address)) {
             fprintf(stderr, "本网卡没有本地IPv6地址，不能进行IPv6局域网扫描\n");
             return;
         }
     }
 
     if (IN6_IS_ADDR_GLOBAL(&DestinationAddress)) {
-        if (IN6_IS_ADDR_UNSPECIFIED(&GlobalIPv6Address)) {
+        if (IN6_IS_ADDR_UNSPECIFIED(&g_AdapterGlobalIPv6Address)) {
             fprintf(stderr, "本网卡没有互联网IPv6地址，不能进行IPv6互联网扫描\n");
             return;
         }
@@ -407,7 +387,7 @@ void Syn6ScanTest0(const char * source, const char * RemoteIPv6, WORD RemotePort
 
     PacketizeSyn6(g_ActivityAdapterMac,
                   DesMac,
-                  IN6_IS_ADDR_LINKLOCAL(&DestinationAddress) ? &LinkLocalIPv6Address : &GlobalIPv6Address,
+                  IN6_IS_ADDR_LINKLOCAL(&DestinationAddress) ? &g_AdapterLinkLocalIPv6Address : &g_AdapterGlobalIPv6Address,
                   &DestinationAddress,
                   htons(LocalPort),
                   htons(RemotePort),

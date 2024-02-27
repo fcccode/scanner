@@ -13,8 +13,14 @@
 
 CHAR g_ExePath[MAX_PATH]{};
 CHAR g_Date[MAX_PATH];
+
+//可考虑封装一个结构。
 string g_ActivityAdapterName;
 UINT8 g_ActivityAdapterMac[6] = {0};
+IN_ADDR g_AdapterIPv4ddress = IN4ADDR_ANY_INIT;
+IN6_ADDR g_AdapterLinkLocalIPv6Address = IN6ADDR_ANY_INIT;
+IN6_ADDR g_AdapterGlobalIPv6Address = IN6ADDR_ANY_INIT;
+UINT8 g_AdapterGatewayMac[6] = {0};
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -117,6 +123,13 @@ DWORD init()
     GetActivityAdapter(g_ActivityAdapterName);
 
     GetMacAddress(g_ActivityAdapterName.c_str(), g_ActivityAdapterMac);
+
+    GetAdapterAddress(g_ActivityAdapterName.c_str(),
+                      &g_AdapterIPv4ddress,
+                      &g_AdapterLinkLocalIPv6Address,
+                      &g_AdapterGlobalIPv6Address);
+
+    GetGatewayMacByIPv4(inet_ntoa(g_AdapterIPv4ddress), g_AdapterGatewayMac);
 
     return ret;
 }

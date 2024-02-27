@@ -140,10 +140,10 @@ is_special_ip_v4
 }
 
 
-int GetOneAddress(_In_ const char * source,
-                  PIN_ADDR IPv4ddress,
-                  PIN6_ADDR LinkLocalIPv6Address,
-                  PIN6_ADDR GlobalIPv6Address
+int GetAdapterAddress(_In_ const char * source,
+                      PIN_ADDR IPv4ddress,
+                      PIN6_ADDR LinkLocalIPv6Address,
+                      PIN6_ADDR GlobalIPv6Address
 )
 /*
 功能：获取一个网卡的(最后)一个IP(v4/6)地址。

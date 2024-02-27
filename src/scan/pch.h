@@ -236,16 +236,20 @@ extern CHAR g_ExePath[MAX_PATH];
 extern CHAR g_Date[MAX_PATH];
 extern string g_ActivityAdapterName;
 extern UINT8 g_ActivityAdapterMac[6];
+extern IN_ADDR g_AdapterIPv4ddress;
+extern IN6_ADDR g_AdapterLinkLocalIPv6Address;
+extern IN6_ADDR g_AdapterGlobalIPv6Address;
+extern UINT8 g_AdapterGatewayMac[6];
 
 BOOL LoadNpcapDlls();
 int RangedRand(int range_min, int range_max);
 void ErrorHandler(LPTSTR lpszFunction);
 bool IsSpecialIPv4(PIN_ADDR IPv4);
 int GetMacAddress(_In_ const char * source, OUT PBYTE MacAddress);
-int GetOneAddress(_In_ const char * source,
-				  PIN_ADDR IPv4ddress,
-				  PIN6_ADDR LinkLocalIPv6Address,
-				  PIN6_ADDR GlobalIPv6Address);
+int GetAdapterAddress(_In_ const char * source,
+                      PIN_ADDR IPv4ddress,
+                      PIN6_ADDR LinkLocalIPv6Address,
+                      PIN6_ADDR GlobalIPv6Address);
 int EnumAvailableInterface();
 void GetAdapterNames();
 bool GetFirstAvailableInterface(string & name);

@@ -261,13 +261,8 @@ DWORD WINAPI ScanAllIPv4Thread(_In_ LPVOID lpParameter)
         return ERROR_INVALID_HANDLE;
     }
 
-    IN_ADDR SourceAddress;
-    GetOneAddress(g_ActivityAdapterName.c_str(), &SourceAddress, NULL, NULL);
-
-    UINT8 DesMac[6] = {0};
-    GetGatewayMacByIPv4(inet_ntoa(SourceAddress), DesMac);
-    if (DesMac[0] == 0 && DesMac[1] == 0 && DesMac[2] == 0 &&
-        DesMac[3] == 0 && DesMac[4] == 0 && DesMac[5] == 0) {
+    if (g_AdapterGatewayMac[0] == 0 && g_AdapterGatewayMac[1] == 0 && g_AdapterGatewayMac[2] == 0 &&
+        g_AdapterGatewayMac[3] == 0 && g_AdapterGatewayMac[4] == 0 && g_AdapterGatewayMac[5] == 0) {
         fprintf(stderr, "没有获取到%s的网关的物理地址，扫描退出\n", g_ActivityAdapterName.c_str());
         return ERROR_INVALID_HANDLE;
     }
@@ -296,11 +291,11 @@ DWORD WINAPI ScanAllIPv4Thread(_In_ LPVOID lpParameter)
         SendDataArray[i]->start = i * step;
         SendDataArray[i]->len = step;
         SendDataArray[i]->fp = fp;
-        SendDataArray[i]->SourceAddress.IPv4.S_un.S_addr = SourceAddress.S_un.S_addr;
+        SendDataArray[i]->SourceAddress.IPv4.S_un.S_addr = g_AdapterIPv4ddress.S_un.S_addr;
         SendDataArray[i]->RemotePort = ScanContext->RemotePort;
         SendDataArray[i]->FileName = ScanContext->FileName;
         CopyMemory(SendDataArray[i]->SrcMac, g_ActivityAdapterMac, sizeof(g_ActivityAdapterMac));
-        CopyMemory(SendDataArray[i]->DesMac, DesMac, sizeof(DesMac));
+        CopyMemory(SendDataArray[i]->DesMac, g_AdapterGatewayMac, sizeof(g_AdapterGatewayMac));
 
         SendThreadArray[i] = CreateThread(NULL,
                                           0,
@@ -490,13 +485,8 @@ DWORD WINAPI IPv4SubnetScanThread(_In_ LPVOID lpParameter)
         return ERROR_INVALID_HANDLE;
     }
 
-    IN_ADDR SourceAddress = {0};
-    GetOneAddress(g_ActivityAdapterName.c_str(), &SourceAddress, NULL, NULL);
-
-    UINT8 DesMac[6] = {0};
-    GetGatewayMacByIPv4(inet_ntoa(SourceAddress), DesMac);
-    if (DesMac[0] == 0 && DesMac[1] == 0 && DesMac[2] == 0 &&
-        DesMac[3] == 0 && DesMac[4] == 0 && DesMac[5] == 0) {
+    if (g_AdapterGatewayMac[0] == 0 && g_AdapterGatewayMac[1] == 0 && g_AdapterGatewayMac[2] == 0 &&
+        g_AdapterGatewayMac[3] == 0 && g_AdapterGatewayMac[4] == 0 && g_AdapterGatewayMac[5] == 0) {
         fprintf(stderr, "没有获取到%s的网关的物理地址，扫描退出\n", g_ActivityAdapterName.c_str());
         return ERROR_INVALID_HANDLE;
     }
@@ -522,10 +512,10 @@ DWORD WINAPI IPv4SubnetScanThread(_In_ LPVOID lpParameter)
         SendDataArray[i]->start = ScanContext->start;
         SendDataArray[i]->mask = ScanContext->mask;
         SendDataArray[i]->fp = fp;
-        SendDataArray[i]->SourceAddress.IPv4.S_un.S_addr = SourceAddress.S_un.S_addr;
+        SendDataArray[i]->SourceAddress.IPv4.S_un.S_addr = g_AdapterIPv4ddress.S_un.S_addr;
         SendDataArray[i]->RemotePort = ScanContext->RemotePort;
         CopyMemory(SendDataArray[i]->SrcMac, g_ActivityAdapterMac, sizeof(g_ActivityAdapterMac));
-        CopyMemory(SendDataArray[i]->DesMac, DesMac, sizeof(DesMac));
+        CopyMemory(SendDataArray[i]->DesMac, g_AdapterGatewayMac, sizeof(g_AdapterGatewayMac));
 
         SendThreadArray[i] = CreateThread(NULL,
                                           0,
@@ -740,17 +730,13 @@ DWORD WINAPI IPv4PortScanThread(_In_ LPVOID lpParameter)
         return ERROR_INVALID_HANDLE;
     }
 
-    IN_ADDR SourceAddress = IN4ADDR_ANY_INIT;
-    GetOneAddress(g_ActivityAdapterName.c_str(), &SourceAddress, NULL, NULL);
-    if (IN4_IS_ADDR_UNSPECIFIED(&SourceAddress)) {
+    if (IN4_IS_ADDR_UNSPECIFIED(&g_AdapterIPv4ddress)) {
         fprintf(stderr, "没有获取到%s的本机地址，扫描退出\n", g_ActivityAdapterName.c_str());
         return ERROR_INVALID_HANDLE;
     }
 
-    UINT8 DesMac[6] = {0};
-    GetGatewayMacByIPv4(inet_ntoa(SourceAddress), DesMac);
-    if (DesMac[0] == 0 && DesMac[1] == 0 && DesMac[2] == 0 &&
-        DesMac[3] == 0 && DesMac[4] == 0 && DesMac[5] == 0) {
+    if (g_AdapterGatewayMac[0] == 0 && g_AdapterGatewayMac[1] == 0 && g_AdapterGatewayMac[2] == 0 &&
+        g_AdapterGatewayMac[3] == 0 && g_AdapterGatewayMac[4] == 0 && g_AdapterGatewayMac[5] == 0) {
         fprintf(stderr, "没有获取到%s的网关的物理地址，扫描退出\n", g_ActivityAdapterName.c_str());
         return ERROR_INVALID_HANDLE;
     }
@@ -773,10 +759,10 @@ DWORD WINAPI IPv4PortScanThread(_In_ LPVOID lpParameter)
         SendDataArray[i]->start = ScanContext->start;
         SendDataArray[i]->StartPort = ScanContext->StartPort;
         SendDataArray[i]->fp = fp;
-        SendDataArray[i]->SourceAddress.IPv4.S_un.S_addr = SourceAddress.S_un.S_addr;
+        SendDataArray[i]->SourceAddress.IPv4.S_un.S_addr = g_AdapterIPv4ddress.S_un.S_addr;
         SendDataArray[i]->EndPort = ScanContext->EndPort;
         CopyMemory(SendDataArray[i]->SrcMac, g_ActivityAdapterMac, sizeof(g_ActivityAdapterMac));
-        CopyMemory(SendDataArray[i]->DesMac, DesMac, sizeof(DesMac));
+        CopyMemory(SendDataArray[i]->DesMac, g_AdapterGatewayMac, sizeof(g_AdapterGatewayMac));
 
         SendThreadArray[i] = CreateThread(NULL,
                                           0,
@@ -974,23 +960,19 @@ DWORD WINAPI IPv6PortScanThread(_In_ LPVOID lpParameter)
         return ERROR_INVALID_HANDLE;
     }
 
-    IN6_ADDR LinkLocalIPv6Address = IN6ADDR_ANY_INIT;
-    IN6_ADDR GlobalIPv6Address = IN6ADDR_ANY_INIT;
-    GetOneAddress(g_ActivityAdapterName.c_str(), NULL, &LinkLocalIPv6Address, &GlobalIPv6Address);
-
     DWORD ipbufferlength = 46;
     char ipstringbuffer[46] = {0};
-    inet_ntop(AF_INET6, &LinkLocalIPv6Address, ipstringbuffer, ipbufferlength);
+    inet_ntop(AF_INET6, &g_AdapterLinkLocalIPv6Address, ipstringbuffer, ipbufferlength);
 
     if (IN6_IS_ADDR_LINKLOCAL(&ScanContext->DestinationAddress.IPv6)) {
-        if (IN6_IS_ADDR_UNSPECIFIED(&LinkLocalIPv6Address)) {
+        if (IN6_IS_ADDR_UNSPECIFIED(&g_AdapterLinkLocalIPv6Address)) {
             fprintf(stderr, "本网卡没有本地IPv6地址，不能进行IPv6局域网扫描\n");
             return ERROR_INVALID_HANDLE;
         }
     }
 
     if (IN6_IS_ADDR_GLOBAL(&ScanContext->DestinationAddress.IPv6)) {
-        if (IN6_IS_ADDR_UNSPECIFIED(&GlobalIPv6Address)) {
+        if (IN6_IS_ADDR_UNSPECIFIED(&g_AdapterGlobalIPv6Address)) {
             fprintf(stderr, "本网卡没有互联网IPv6地址，不能进行IPv6互联网扫描\n");
             return ERROR_INVALID_HANDLE;
         }
@@ -1041,9 +1023,9 @@ DWORD WINAPI IPv6PortScanThread(_In_ LPVOID lpParameter)
         CopyMemory(SendDataArray[i]->DesMac, DesMac, sizeof(DesMac));
 
         if (IN6_IS_ADDR_LINKLOCAL(&ScanContext->DestinationAddress.IPv6)) {
-            RtlCopyMemory(&SendDataArray[i]->SourceAddress.IPv6, &LinkLocalIPv6Address, sizeof(IN6_ADDR));
+            RtlCopyMemory(&SendDataArray[i]->SourceAddress.IPv6, &g_AdapterLinkLocalIPv6Address, sizeof(IN6_ADDR));
         } else {
-            RtlCopyMemory(&SendDataArray[i]->SourceAddress.IPv6, &GlobalIPv6Address, sizeof(IN6_ADDR));
+            RtlCopyMemory(&SendDataArray[i]->SourceAddress.IPv6, &g_AdapterGlobalIPv6Address, sizeof(IN6_ADDR));
         }
 
         RtlCopyMemory(&SendDataArray[i]->DestinationAddress.IPv6,

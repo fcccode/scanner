@@ -34,7 +34,7 @@ void test_udp4(const char * source)
 
     IN_ADDR SourceAddress;
     SourceAddress.S_un.S_addr = inet_addr("192.168.5.3");
-    //GetOneAddress(source, &SourceAddress, NULL, NULL);
+    //GetAdapterAddress(source, &SourceAddress, NULL, NULL);
 
     IN_ADDR DestinationAddress;
     DestinationAddress.S_un.S_addr = inet_addr("8.8.8.8");
