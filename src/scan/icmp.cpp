@@ -1,4 +1,5 @@
 #include "icmp.h"
+#include <winternl.h>
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -99,7 +100,7 @@ int Icmpv4Scan(PIN_ADDR DstIPv4, BYTE Mask)
 int Icmpv6Scan(PIN6_ADDR DstIPv6)
 /*
 
-局域网的测试成功，互联网的测试还没成功。
+局域网的和互联网的都测试成功。
 */
 {
     int ret = 0;
@@ -112,8 +113,8 @@ int Icmpv6Scan(PIN6_ADDR DstIPv6)
     }
 
     struct sockaddr_in6 SourceAddress = {0};
-    SourceAddress.sin6_addr = g_AdapterLinkLocalIPv6Address;
-    //SourceAddress.sin6_addr = g_AdapterGlobalIPv6Address;
+    //SourceAddress.sin6_addr = g_AdapterLinkLocalIPv6Address;
+    SourceAddress.sin6_addr = g_AdapterGlobalIPv6Address;
     //SourceAddress.sin6_addr = in6addr_any;//这个更通用。
     SourceAddress.sin6_family = AF_INET6;
 
@@ -121,9 +122,12 @@ int Icmpv6Scan(PIN6_ADDR DstIPv6)
     DestinationAddress.sin6_addr = *DstIPv6;
     DestinationAddress.sin6_family = AF_INET6;
 
-    WORD                     RequestSize = 0;
-    IP_OPTION_INFORMATION  RequestOptions = {255, 0, 0, 0, nullptr};
-    DWORD ReplySize = sizeof(ICMPV6_ECHO_REPLY) + RequestSize + 8;// + sizeof(IO_STATUS_BLOCK)
+    unsigned char         optionsData[32]{};
+
+    WORD                     RequestSize = sizeof(optionsData);
+    IP_OPTION_INFORMATION  RequestOptions = {255, 0, 0, 0/*禁止为(UCHAR)RequestSize*/, optionsData};
+
+    DWORD ReplySize = sizeof(ICMPV6_ECHO_REPLY) + RequestSize + 8 + sizeof(IO_STATUS_BLOCK);
     DWORD                    Timeout = 1000;
 
     PVOID ReplyBuffer = (PVOID)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, ReplySize);
@@ -135,8 +139,8 @@ int Icmpv6Scan(PIN6_ADDR DstIPv6)
                          nullptr,
                          &SourceAddress,
                          &DestinationAddress,
-                         nullptr, //RequestData,
-                         0, //RequestSize,
+                         optionsData, //RequestData,
+                         RequestSize,
                          &RequestOptions,
                          ReplyBuffer,
                          ReplySize,
