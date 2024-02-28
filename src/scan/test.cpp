@@ -1,15 +1,17 @@
 #include "test.h"
 #include "udp.h"
+#include "icmp.h"
 
 
 int test()
 {
-    string source;
-    GetActivityAdapter(source);
+    IN_ADDR DestinationAddress;
+    DestinationAddress.S_un.S_addr = inet_addr("104.193.88.77");
+    Icmpv4Scan(&DestinationAddress);
 
-    //Syn4ScanTest(source.c_str(), "58.30.226.47", 3389);
-    //Syn6ScanTest(source.c_str(), "fe80::95c9:6378:91c0:d5b2", 80);//2001:4860:4860::6464 53
-    test_udp4(source.c_str());
+    IN6_ADDR sin6_addr;
+    InetPtonA(AF_INET6, "240e:390:8a0:f940:a09a:948a:3480:4479", &sin6_addr);//2607:f8b0:4005:803::200e   fe80::36ca:81ff:fe23:b43
+    Icmpv6Scan(&sin6_addr);
 
     return ERROR_SUCCESS;
 }

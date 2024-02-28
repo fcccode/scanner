@@ -73,6 +73,9 @@
 #include <mshtmhst.h>
 #include <exdisp.h>
 #include <memory.h>
+#include <iphlpapi.h> //请注意， Iphlpapi.h 头文件的 include 指令必须放在 Icmpapi.h 头文件之前。
+//#include <IPExport.h>//永远不应直接使用 Ipexport.h 头文件。
+#include <icmpapi.h> //前面需先包含IPExport.h。
 
 #define _CRT_RAND_S 
 #include <stdlib.h>
@@ -160,7 +163,6 @@
 
 #pragma comment(lib,"Netapi32.lib")
 
-#include <iphlpapi.h>
 #pragma comment(lib, "IPHLPAPI.lib")
 
 #include <Wtsapi32.h>
