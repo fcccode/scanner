@@ -185,6 +185,88 @@ int Icmpv4Scan(PIN_ADDR DstIPv4, BYTE Mask)
 }
 
 
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+void calculation_icmpv6_echo_request_checksum(OUT PBYTE buffer, IN int OptLen)
+/*
+
+
+数据结构的布局是：sizeof(ETHERNET_HEADER) + sizeof(IPV6_HEADER) + sizeof(ICMP_MESSAGE) + 0x20
+*/
+{
+    UNREFERENCED_PARAMETER(OptLen);
+
+    PIPV6_HEADER ip_hdr = (PIPV6_HEADER)(buffer + sizeof(ETHERNET_HEADER));
+    PICMP_MESSAGE icmp_message = (PICMP_MESSAGE)(buffer + sizeof(ETHERNET_HEADER) + sizeof(IPV6_HEADER));
+
+    BYTE temp[sizeof(PSD6_HEADER) + sizeof(ICMP_MESSAGE) + 0x20]{};
+
+    PSD6_HEADER * PseudoHeader = reinterpret_cast<PSD6_HEADER *>(temp);
+    RtlCopyMemory(&PseudoHeader->saddr, &ip_hdr->SourceAddress, sizeof(IN6_ADDR));
+    RtlCopyMemory(&PseudoHeader->daddr, &ip_hdr->DestinationAddress, sizeof(IN6_ADDR));
+    PseudoHeader->length = ntohl(sizeof(ICMP_MESSAGE) + 0x20);
+    PseudoHeader->unused1 = 0;
+    PseudoHeader->unused2 = 0;
+    PseudoHeader->unused3 = 0;
+    PseudoHeader->proto = IPPROTO_ICMPV6;
+
+    PBYTE test = temp + sizeof(PSD6_HEADER);
+    RtlCopyMemory(test, icmp_message, sizeof(ICMP_MESSAGE) + 0x20);
+
+    icmp_message->Header.Checksum = checksum(reinterpret_cast<USHORT *>(temp), sizeof(temp));
+}
+
+
+
+void InitIpv6Header(IN PIN6_ADDR SourceAddress,
+                    IN PIN6_ADDR DestinationAddress,
+                    IN UINT8 NextHeader, //取值，如：IPPROTO_TCP等。
+                    IN UINT16 OptLen,
+                    OUT PIPV6_HEADER IPv6Header
+)
+/*
+
+*/
+{
+    IPv6Header->VersionClassFlow = ntohl((6 << 28) | (0 << 20) | 0);// IPv6 version (4 bits), Traffic class (8 bits), Flow label (20 bits)
+    IPv6Header->PayloadLength = ntohs(OptLen);
+    IPv6Header->NextHeader = NextHeader;
+    IPv6Header->HopLimit = 128;//128 64
+
+    RtlCopyMemory(&IPv6Header->SourceAddress, SourceAddress, sizeof(IN6_ADDR));
+    RtlCopyMemory(&IPv6Header->DestinationAddress, DestinationAddress, sizeof(IN6_ADDR));
+}
+
+
+void WINAPI packetize_icmpv6_echo_request(IN PBYTE SrcMac,    //6字节长的本地的MAC。
+                                          IN PBYTE DesMac,
+                                          IN PIN6_ADDR SourceAddress,
+                                          IN PIN6_ADDR DestinationAddress,
+                                          OUT PBYTE buffer//长度是sizeof(ETHERNET_HEADER) + sizeof(IPV6_HEADER) + sizeof(ICMP_MESSAGE) + 0x20
+)
+{
+    //BYTE icmpv4_echo_request[sizeof(ETHERNET_HEADER) + sizeof(IPV6_HEADER) + sizeof(ICMP_MESSAGE)]{};//可以再附加数据。
+
+    InitEthernetHeader(SrcMac, DesMac, ETHERNET_TYPE_IPV6, (PETHERNET_HEADER)buffer);
+
+    InitIpv6Header(SourceAddress,
+                   DestinationAddress,
+                   IPPROTO_ICMPV6,
+                   sizeof(ICMP_MESSAGE) + 0x20,
+                   (PIPV6_HEADER)(buffer + sizeof(ETHERNET_HEADER)));
+
+    PICMP_MESSAGE icmp_message = (PICMP_MESSAGE)(buffer + sizeof(ETHERNET_HEADER) + sizeof(IPV6_HEADER));
+    icmp_message->Header.Type = ICMP6_ECHO_REQUEST;
+    icmp_message->Header.Code = 0;
+    icmp_message->Header.Checksum = 0;
+    icmp_message->icmp6_id = (USHORT)GetCurrentProcessId();
+    icmp_message->icmp6_seq = (USHORT)GetTickCount64();
+    //icmp_message->Header.Checksum = 
+    calculation_icmpv6_echo_request_checksum(buffer, sizeof(ETHERNET_HEADER) + sizeof(IPV6_HEADER) + sizeof(ICMP_MESSAGE) + 0x20);
+}
+
+
 int Icmpv6Scan(PIN6_ADDR DstIPv6)
 /*
 
@@ -266,6 +348,40 @@ int Icmpv6Scan(PIN6_ADDR DstIPv6)
 }
 
 
+int Icmpv6Scan(PIN6_ADDR SrcIPv6, PIN6_ADDR DstIPv6)
+{
+    BYTE Tmp[sizeof(ETHERNET_HEADER) + sizeof(IPV6_HEADER) + sizeof(ICMP_MESSAGE) + 0x20]{};
+
+    memset(Tmp + sizeof(ETHERNET_HEADER) + sizeof(IPV6_HEADER) + sizeof(ICMP_MESSAGE), '#', 0x20);
+
+    packetize_icmpv6_echo_request(g_ActivityAdapterMac, g_AdapterGatewayMac, SrcIPv6, DstIPv6, Tmp);
+    /*
+    这个包也发送成功了，对方也回了，
+    但是操作系统又发送一个：icmpv6 "parameter problem" "unrecognized Next Header type encountered"
+    */
+
+    pcap_t * fp;
+    char errbuf[PCAP_ERRBUF_SIZE];
+    if ((fp = pcap_open(g_ActivityAdapterName.c_str(), 
+                        sizeof(Tmp),				// portion of the packet to capture (only the first 100 bytes)
+                        PCAP_OPENFLAG_PROMISCUOUS, 	// promiscuous mode
+                        1,				    // read timeout
+                        NULL,				// authentication on the remote machine
+                        errbuf				// error buffer
+    )) == NULL) {
+        fprintf(stderr, "\nUnable to open the adapter. %s is not supported by Npcap\n", g_ActivityAdapterName.c_str());
+        return 0;
+    }
+
+    if (pcap_sendpacket(fp, (const u_char *)Tmp, sizeof(Tmp)) != 0) {
+        fprintf(stderr, "\nError sending the packet: %s\n", pcap_geterr(fp));
+        return 0;
+    }
+
+    return 0;
+}
+
+
 int Icmpv6Scan(PIN6_ADDR DstIPv6, BYTE Mask)
 {
     int ret = 0;
@@ -275,3 +391,6 @@ int Icmpv6Scan(PIN6_ADDR DstIPv6, BYTE Mask)
 
     return ret;
 }
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////

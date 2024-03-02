@@ -187,11 +187,13 @@ int GetAdapterAddress(_In_ const char * source,
                     }
 
                     if (GlobalIPv6Address) {
-                        if (IN6_IS_ADDR_GLOBAL(&ipv6->sin6_addr)) {
-                            RtlCopyMemory(GlobalIPv6Address->u.Byte,
-                                          ipv6->sin6_addr.u.Byte,
-                                          sizeof(GlobalIPv6Address->u.Byte));
-                        }
+                        //if (IN6_IS_ADDR_UNSPECIFIED(GlobalIPv6Address)) {//优先取临时的全局地址。
+                            if (IN6_IS_ADDR_GLOBAL(&ipv6->sin6_addr)) {
+                                RtlCopyMemory(GlobalIPv6Address->u.Byte,
+                                              ipv6->sin6_addr.u.Byte,
+                                              sizeof(GlobalIPv6Address->u.Byte));
+                            }
+                        //}
                     }
 
                     break;
