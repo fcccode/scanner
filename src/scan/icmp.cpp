@@ -150,21 +150,7 @@ int Icmpv4Scan(PIN_ADDR SrcIPv4, PIN_ADDR DstIPv4)
 {
     BYTE icmpv4_echo_request[sizeof(ETHERNET_HEADER) + sizeof(IPV4_HEADER) + sizeof(ICMP_MESSAGE)]{};
 
-    InitEthernetHeader(g_ActivityAdapterMac, g_AdapterGatewayMac, ETHERNET_TYPE_IPV4, (PETHERNET_HEADER)icmpv4_echo_request);
-
-    InitIpv4Header(SrcIPv4,
-                   DstIPv4,
-                   IPPROTO_ICMP,
-                   sizeof(IPV4_HEADER) + sizeof(ICMP_MESSAGE),
-                   (PIPV4_HEADER)((PBYTE)icmpv4_echo_request + sizeof(ETHERNET_HEADER)));
-
-    PICMP_MESSAGE icmp_message = (PICMP_MESSAGE)((PBYTE)icmpv4_echo_request + sizeof(ETHERNET_HEADER) + sizeof(IPV4_HEADER));
-    icmp_message->Header.Type = 8;// ntohs ICMP6_ECHO_REQUEST;
-    icmp_message->Header.Code = 0;
-    icmp_message->Header.Checksum = 0;
-    icmp_message->icmp6_id = (USHORT)GetCurrentProcessId();
-    icmp_message->icmp6_seq = (USHORT)GetTickCount64();
-    icmp_message->Header.Checksum = checksum((USHORT *)icmp_message, sizeof(ICMP_MESSAGE));
+    packetize_icmpv4_echo_request(g_ActivityAdapterMac, g_AdapterGatewayMac, SrcIPv4, DstIPv4, icmpv4_echo_request);
 
     pcap_t * fp;
     char errbuf[PCAP_ERRBUF_SIZE];
