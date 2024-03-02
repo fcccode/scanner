@@ -18,7 +18,7 @@ int test()
     //Icmpv6Scan(&sin6_addr);
 
     //Icmpv6Scan(&g_AdapterLinkLocalIPv6Address, &sin6_addr);
-    Icmpv6Scan(IN6_IS_ADDR_LINKLOCAL(&sin6_addr) ? &g_AdapterGlobalIPv6Address : &g_AdapterLinkLocalIPv6Address, &sin6_addr);
+    Icmpv6Scan(IN6_IS_ADDR_GLOBAL(&sin6_addr) ? &g_AdapterGlobalIPv6Address : &g_AdapterLinkLocalIPv6Address, &sin6_addr);
 
     return ERROR_SUCCESS;
 }
