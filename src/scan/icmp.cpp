@@ -5,6 +5,59 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+void InitEthernetHeader(IN PBYTE SrcMac, IN PBYTE DesMac, IN UINT16 Type, OUT PETHERNET_HEADER eth_hdr)
+/*
+功能：填写以太头。
+
+参数：
+Type，取值，如：ETHERNET_TYPE_IPV4，ETHERNET_TYPE_IPV6， ETHERNET_TYPE_ARP等。
+
+注释：
+1.填写虚假的目的MAC，也可发送出去。
+2.如果是想接收包，还是建议填写正确的目标的MAC（局域网的）.
+3.这个MAC需要计算，如网关的MAC。
+*/
+{
+    eth_hdr->Destination.Byte[0] = DesMac[0];
+    eth_hdr->Destination.Byte[1] = DesMac[1];
+    eth_hdr->Destination.Byte[2] = DesMac[2];
+    eth_hdr->Destination.Byte[3] = DesMac[3];
+    eth_hdr->Destination.Byte[4] = DesMac[4];
+    eth_hdr->Destination.Byte[5] = DesMac[5];
+
+    eth_hdr->Source.Byte[0] = SrcMac[0];
+    eth_hdr->Source.Byte[1] = SrcMac[1];
+    eth_hdr->Source.Byte[2] = SrcMac[2];
+    eth_hdr->Source.Byte[3] = SrcMac[3];
+    eth_hdr->Source.Byte[4] = SrcMac[4];
+    eth_hdr->Source.Byte[5] = SrcMac[5];
+
+    eth_hdr->Type = ntohs(Type);
+}
+
+
+void InitIpv4Header(IN PIN_ADDR SourceAddress,
+                    IN PIN_ADDR DestinationAddress,
+                    IN UINT8 Protocol, //取值，如：IPPROTO_TCP等。
+                    IN UINT16 TotalLength,//严格计算数据的大小。
+                    OUT PIPV4_HEADER IPv4Header
+)
+/*
+功能：组装IPv4头。
+*/
+{
+    IPv4Header->VersionAndHeaderLength = (4 << 4) | (sizeof(IPV4_HEADER) / sizeof(unsigned long));
+    IPv4Header->TotalLength = ntohs(TotalLength);
+    IPv4Header->Identification = ntohs(0);
+    IPv4Header->DontFragment = TRUE;
+    IPv4Header->TimeToLive = 128;
+    IPv4Header->Protocol = Protocol;
+    IPv4Header->SourceAddress.S_un.S_addr = SourceAddress->S_un.S_addr;
+    IPv4Header->DestinationAddress.S_un.S_addr = DestinationAddress->S_un.S_addr;
+    IPv4Header->HeaderChecksum = checksum(reinterpret_cast<unsigned short *>(IPv4Header), sizeof(IPV4_HEADER));
+}
+
+
 int Icmpv4Scan(PIN_ADDR DstIPv4)
 /*
 
@@ -90,6 +143,48 @@ int Icmpv4Scan(PIN_ADDR DstIPv4)
     }
 
     return ret;
+}
+
+
+int Icmpv4Scan(PIN_ADDR SrcIPv4, PIN_ADDR DstIPv4)
+{
+    BYTE icmpv4_echo_request[sizeof(ETHERNET_HEADER) + sizeof(IPV4_HEADER) + sizeof(ICMP_MESSAGE)]{};
+
+    InitEthernetHeader(g_ActivityAdapterMac, g_AdapterGatewayMac, ETHERNET_TYPE_IPV4, (PETHERNET_HEADER)icmpv4_echo_request);
+
+    InitIpv4Header(SrcIPv4,
+                   DstIPv4,
+                   IPPROTO_ICMP,
+                   sizeof(IPV4_HEADER) + sizeof(ICMP_MESSAGE),
+                   (PIPV4_HEADER)((PBYTE)icmpv4_echo_request + sizeof(ETHERNET_HEADER)));
+
+    PICMP_MESSAGE icmp_message = (PICMP_MESSAGE)((PBYTE)icmpv4_echo_request + sizeof(ETHERNET_HEADER) + sizeof(IPV4_HEADER));
+    icmp_message->Header.Type = 8;// ntohs ICMP6_ECHO_REQUEST;
+    icmp_message->Header.Code = 0;
+    icmp_message->Header.Checksum = 0;
+    icmp_message->icmp6_id = (USHORT)GetCurrentProcessId();
+    icmp_message->icmp6_seq = (USHORT)GetTickCount64();
+    icmp_message->Header.Checksum = checksum((USHORT *)icmp_message, sizeof(ICMP_MESSAGE));
+
+    pcap_t * fp;
+    char errbuf[PCAP_ERRBUF_SIZE];
+    if ((fp = pcap_open(g_ActivityAdapterName.c_str(),				// name of the device
+                        sizeof(icmpv4_echo_request),				// portion of the packet to capture (only the first 100 bytes)
+                        PCAP_OPENFLAG_PROMISCUOUS, 	// promiscuous mode
+                        1,				    // read timeout
+                        NULL,				// authentication on the remote machine
+                        errbuf				// error buffer
+    )) == NULL) {
+        fprintf(stderr, "\nUnable to open the adapter. %s is not supported by Npcap\n", g_ActivityAdapterName.c_str());
+        return 0;
+    }
+
+    if (pcap_sendpacket(fp, (const u_char *)icmpv4_echo_request, sizeof(icmpv4_echo_request)) != 0) {
+        fprintf(stderr, "\nError sending the packet: %s\n", pcap_geterr(fp));
+        return 0;
+    }
+
+    return 0;
 }
 
 
