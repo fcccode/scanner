@@ -320,16 +320,45 @@ int Icmpv6Scan(PIN6_ADDR DstIPv6)
 }
 
 
+void WINAPI packetize_icmpv6_echo_request_test(IN PBYTE SrcMac,    //6字节长的本地的MAC。
+                                               IN PBYTE DesMac,
+                                               IN PIN6_ADDR SourceAddress,
+                                               IN PIN6_ADDR DestinationAddress,
+                                               OUT PBYTE buffer//长度是sizeof(ETHERNET_HEADER) + sizeof(IPV6_HEADER) + sizeof(ICMP_MESSAGE) + 0x20
+)
+{
+    //BYTE icmpv4_echo_request[sizeof(ETHERNET_HEADER) + sizeof(IPV6_HEADER) + sizeof(ICMP_MESSAGE)]{};//可以再附加数据。
+
+    InitEthernetHeader(SrcMac, DesMac, ETHERNET_TYPE_IPV6, (PETHERNET_HEADER)buffer);
+
+    InitIpv6Header(SourceAddress,
+                   DestinationAddress,
+                   IPPROTO_ICMPV6,
+                   sizeof(ICMP_MESSAGE) + 0x20,
+                   (PIPV6_HEADER)(buffer + sizeof(ETHERNET_HEADER)));
+
+    PICMP_MESSAGE icmp_message = (PICMP_MESSAGE)(buffer + sizeof(ETHERNET_HEADER) + sizeof(IPV6_HEADER));
+    icmp_message->Header.Type = ICMP6_ECHO_REQUEST;
+    icmp_message->Header.Code = 0;
+    icmp_message->Header.Checksum = 0;
+    icmp_message->icmp6_id = (USHORT)GetCurrentProcessId();//htons(0xbc44);// 
+    icmp_message->icmp6_seq = (USHORT)GetTickCount64();  //htons(0xb3);
+    //icmp_message->Header.Checksum = 
+    calculation_icmpv6_echo_request_checksum(buffer, sizeof(ETHERNET_HEADER) + sizeof(IPV6_HEADER) + sizeof(ICMP_MESSAGE) + 0x20);
+}
+
+
 int Icmpv6Scan(PIN6_ADDR SrcIPv6, PIN6_ADDR DstIPv6)
 {
     BYTE Tmp[sizeof(ETHERNET_HEADER) + sizeof(IPV6_HEADER) + sizeof(ICMP_MESSAGE) + 0x20]{};
 
     memset(Tmp + sizeof(ETHERNET_HEADER) + sizeof(IPV6_HEADER) + sizeof(ICMP_MESSAGE), '#', 0x20);
 
-    packetize_icmpv6_echo_request(g_ActivityAdapterMac, g_AdapterGatewayMac, SrcIPv6, DstIPv6, Tmp);
+    packetize_icmpv6_echo_request_test(g_ActivityAdapterMac, g_AdapterGatewayMac, SrcIPv6, DstIPv6, Tmp);
     /*
     这个包也发送成功了，对方也回了，
     但是操作系统又发送一个：icmpv6 "parameter problem" "unrecognized Next Header type encountered"
+    包组装的没问题，应该是别处的代码或设置的问题，因为同样的包，也会出现这个问题。
     */
 
     pcap_t * fp;
