@@ -359,6 +359,7 @@ int Icmpv6Scan(PIN6_ADDR SrcIPv6, PIN6_ADDR DstIPv6)
     这个包也发送成功了，对方也回了，
     但是操作系统又发送一个：icmpv6 "parameter problem" "unrecognized Next Header type encountered"
     包组装的没问题，应该是别处的代码或设置的问题，因为同样的包，也会出现这个问题。
+    nmap -sP 2603:1030:20e:3::23c -6 也会出现这个报文。
     */
 
     pcap_t * fp;
