@@ -4,8 +4,5 @@
 
 #pragma once
 
-class version
-{
-
-};
+#include "pch.h"
 

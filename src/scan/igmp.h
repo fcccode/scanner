@@ -1,5 +1,3 @@
 #pragma once
-class igmp
-{
-};
 
+#include "pch.h"

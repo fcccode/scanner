@@ -4,8 +4,5 @@
 
 #pragma once
 
-class os
-{
-
-};
+#include "pch.h"
 

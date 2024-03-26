@@ -1,5 +1,4 @@
 #pragma once
-class rdp
-{
-};
+
+#include "pch.h"
 
